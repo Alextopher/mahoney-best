@@ -1,0 +1,37 @@
+/* Define colors in root variables */
+/* A nice dark theme with  */
+:root {
+    --background-color: #1a1a1a;
+    --text-color: #fff;
+    --accent-color: #0f9700;
+}
+
+/* Set background and text color */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+/* Set accent color for links */
+a {
+    color: var(--accent-color);
+}
+
+/* Header is a <nav> <ul> <li> list */
+header {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border-bottom: 1px solid var(--accent-color);
+    padding: 0.5em;
+}
+
+header ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+header li {
+    display: inline;
+    margin-right: 1em;
+}
