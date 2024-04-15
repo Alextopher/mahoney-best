@@ -10,11 +10,12 @@ Each service is given it's own top-level url representing a single letter.
 
 | TODO | Path | Meaning    | Description |
 | ---- | ---- | ---------- | ----------- |
-|      | /m   | "markdown" | markdown renderer |
+| xxxx | /m   | "markdown" | markdown renderer |
 |      | /t   | "tiny"     | url shortener |
 |      | /r   | "redirect" | url redirector |
 |      | /s   | "static"   | static files baked into the binary |
 | xxxx | /f   | "file"     | simple file upload/download server |
+|      | /w   | "who"      | ip geo-locator, ip/user agent logger, ip reflector |
 
 ## Append-Only
 
