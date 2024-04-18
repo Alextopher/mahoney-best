@@ -1,48 +1,78 @@
-use actix_web::{web, HttpResponse};
+use std::path::PathBuf;
+
+use actix_web::{dev::HttpServiceFactory, get, web, HttpRequest, Responder};
 use include_dir::{include_dir, Dir};
-use pulldown_cmark::Parser;
-use tera::Context;
+use maud::Render;
+
+use crate::components::{self, Markdown};
 
 const CONTENT: Dir = include_dir!("content");
 
 /// Markdown rendering service that functions as the foundation of the site
-pub fn markdown_service() -> impl actix_web::dev::HttpServiceFactory {
-    let tera = tera::Tera::new("templates/**/*").expect("Failed to compile templates");
-
-    web::resource("/m/{filename}")
-        .route(web::get().to(markdown_handler))
-        .app_data(tera.clone())
+pub fn markdown_service() -> impl HttpServiceFactory {
+    web::scope("/m").service(markdown_handler)
 }
 
-async fn markdown_handler(req: actix_web::HttpRequest) -> actix_web::Result<HttpResponse> {
-    let _span = tracing::info_span!("markdown_handler");
+#[derive(serde::Deserialize)]
+struct MarkdownFrontMatter {
+    #[serde(rename = "page-title")]
+    title: String,
+}
 
-    let path = req.match_info().query("filename");
-    let file = CONTENT
-        .get_file(path)
-        .and_then(|f| f.contents_utf8())
-        .ok_or_else(|| {
-            tracing::warn!("File not found: {}", path);
-            actix_web::error::ErrorNotFound("File not found")
-        })?;
-
-    let mut html = String::new();
-    let parser = Parser::new_ext(file, pulldown_cmark::Options::all());
-    pulldown_cmark::html::push_html(&mut html, parser);
-
-    let mut context = Context::new();
-    context.insert("content", &html);
-
-    let tera = req.app_data::<tera::Tera>().ok_or_else(|| {
-        tracing::error!("Tera context missing");
-        actix_web::error::ErrorInternalServerError("Tera context missing")
-    })?;
-
-    match tera.render("markdown.html", &context) {
-        Ok(rendered) => Ok(HttpResponse::Ok().content_type("text/html").body(rendered)),
-        Err(err) => {
-            tracing::error!("Failed to render template: {}", err);
-            Ok(HttpResponse::InternalServerError().finish())
+#[get("/{filename:.*}")]
+async fn markdown_handler(path: web::Path<PathBuf>, req: HttpRequest) -> impl Responder {
+    let path = path.into_inner();
+    let file = match CONTENT.get_file(&path) {
+        Some(f) => f,
+        None => {
+            return Err(actix_web::error::ErrorNotFound("File not found"));
         }
+    };
+
+    let content = match std::str::from_utf8(file.contents()) {
+        Ok(s) => s,
+        Err(e) => return Err(actix_web::error::ErrorInternalServerError(e.to_string())),
+    };
+
+    let markdown = Markdown(content);
+    let front_matter = markdown
+        .front_matter()
+        .transpose()
+        .map_err(|e| {
+            log::error!("Error parsing front matter: {}", e);
+            e
+        })
+        .ok()
+        .flatten()
+        .unwrap_or_else(|| MarkdownFrontMatter {
+            title: path.file_stem().unwrap().to_string_lossy().to_string(),
+        });
+
+    let page = components::Page {
+        title: &front_matter.title,
+        content: markdown,
+        uri: req.uri().path(),
+    };
+
+    Ok(page.render())
+}
+
+#[cfg(test)]
+mod tests {
+    use actix_web::{test, App};
+
+    use super::markdown_service;
+
+    // Check what happens if the path includes ".."
+    #[actix_web::test]
+    async fn test_path_traversal() {
+        let app = test::init_service(App::new().service(markdown_service())).await;
+
+        let req = test::TestRequest::get()
+            .uri("/m/../../Cargo.toml")
+            .to_request();
+        let res = test::call_service(&app, req).await;
+
+        assert_eq!(res.status(), 404);
     }
 }
