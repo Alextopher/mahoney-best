@@ -35,6 +35,6 @@ async fn main() -> std::io::Result<()> {
             .service(redirect("/", "/m/home.md"))
     });
 
-    log::info!("Starting server on http://127.0.0.1:8080");
-    app.bind("127.0.0.1:8080")?.run().await
+    log::info!("Starting server on http://127.0.0.1:80");
+    app.bind("127.0.0.1:80")?.run().await
 }
