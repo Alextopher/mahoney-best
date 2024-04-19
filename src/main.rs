@@ -31,7 +31,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(Compress::default())
             .service(services::baked_files())
             .service(services::markdown_service())
-            .service(services::user_service())
+            // .service(services::user_service())
             .service(redirect("/", "/m/home.md"))
     });
 
