@@ -17,6 +17,8 @@ pub fn markdown_service() -> impl HttpServiceFactory {
 struct MarkdownFrontMatter {
     #[serde(rename = "page-title")]
     title: String,
+    #[serde(default)]
+    hidden: bool,
 }
 
 #[get("/{filename:.*}")]
@@ -46,7 +48,12 @@ async fn markdown_handler(path: web::Path<PathBuf>, req: HttpRequest) -> impl Re
         .flatten()
         .unwrap_or_else(|| MarkdownFrontMatter {
             title: path.file_stem().unwrap().to_string_lossy().to_string(),
+            hidden: false,
         });
+
+    if front_matter.hidden {
+        return Err(actix_web::error::ErrorNotFound("File not found"));
+    }
 
     let page = components::Page {
         title: &front_matter.title,
