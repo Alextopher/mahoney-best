@@ -1,9 +1,12 @@
 mod markdown;
 mod page;
+mod robots;
 
 pub use markdown::Markdown;
-use maud::{html, Markup};
 pub use page::Page;
+pub use robots::robots;
+
+use maud::{html, Markup};
 
 pub fn header(title: &str) -> Markup {
     html! {
@@ -24,7 +27,6 @@ pub fn navbar(current: &str) -> Markup {
     html! {
         nav {
             @for (path, name) in sites {
-                // the active page should be made underline with an inline-style
                 a href=(path) style=(if *path == current { "text-decoration: underline" } else { "" }) { (name) }
             }
         }
