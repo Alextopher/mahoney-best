@@ -18,7 +18,7 @@ I graduated from high school in 2019 and went on to study Computer Science, in p
 
 I've been mentoring my old team since Spring 2023, after returning home from university.
 
-In 2023 I was solely focused on the programming & electronics side of the team. 2023 was a rebuild season for me. I'd become a much stronger programmer and engineer but I needed time to re-integrate into the FRC ecosystem and learn the new tools and techniques that had been developed since I left. A big part of my season was studying Control Theory. I highly recommend reading[_Controls Engineering in the FIRST Robotics Competition_](https://file.tavsys.net/control/controls-engineering-in-frc.pdf) by Tyler Veness if you want to get better at FRC controls. Today, I like to think that there's no bit of FRC programming that's out of reach for my team. The goal for the next few years is growing my team's expertise so we're be able to tackle challenges quickly.
+In 2023 I was solely focused on the programming & electronics side of the team. 2023 was a rebuild season for me. I'd become a much stronger programmer and engineer but I needed time to re-integrate into the FRC ecosystem and learn the new tools and techniques that had been developed since I left. A big part of my season was studying Control Theory. I highly recommend reading [_Controls Engineering in the FIRST Robotics Competition_](https://file.tavsys.net/control/controls-engineering-in-frc.pdf) by Tyler Veness if you want to get better at FRC controls. Today, I like to think that there's no bit of FRC programming that's out of reach for my team. The goal for the next few years is growing my team's expertise so we're be able to tackle challenges quickly.
 
 In 2024 our lead mentor left the team. In response I've taken on a much larger role in the team's leadership. Adding to my programming/electronics role I've been taking on over-all team management, serving as the glue that holds the team together. I've also found myself also helping the design side of the team, I'm not all that great at CAD or mechanical design but I'm able to bring physics and engineering design principles to them.
 
@@ -28,7 +28,7 @@ Other than being a mentor on 5881 I've also opened myself up to assisting other 
 
 | Team                      | Year | Assistance |
 |:--------------------------|:-----|:-----------|
-| FRC 7718 - _HPVA Dragons_ | 2024 | The HPVA teams at Ulster BOCES have an extremely strong design and manufacturing program, but are weaker in programming and controls. During the FRC Crescendo season I made a day trip to their school. I got them setup with their Swerve Drive, and gave them a crash course in Control Theory and WPILib Command-Based Programming architecture. I provided further support online and in person at NY-Tech Valley Regional |
+| [FRC 7718](https://www.team7718.com/) - _HPVA Dragons_ | 2024 | The HPVA teams at Ulster BOCES have an extremely strong design and manufacturing program, but are weaker in programming and controls. During the FRC Crescendo season I made a day trip to their school. I got them setup with their Swerve Drive, and gave them a crash course in Control Theory and WPILib Command-Based Programming architecture. I provided further support online and in person at NY-Tech Valley Regional |
 
 ## Volunteering
 

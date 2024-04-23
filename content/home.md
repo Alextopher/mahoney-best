@@ -17,7 +17,7 @@ I'm a life-long learner with a focus on software engineering but with interests 
 
 I also have a passion for teaching and mentoring. At the moment I'm a Teaching Assistant at [Tech Valley High School](https://techvalleyhigh.org) (TVHS). I was planning on transitioning into education but I've decided to take another crack at tech.
 
-Working at TVHS has been great, I've gotten better at communicating and collaborating through the process. TVHS is also my home, I graduated from there in 2019 and I've felt like I've been able to give back to a place that influenced my life profoundly. Part of my impact at TVHS is I've been able to give many students a lens into the world of Computer Science that they may not have gotten otherwise. At Tech Valley I've been [critical](/m/robotopia.md) to the workings of the school's [FIRST](https://www.firstinspires.org/) robotics team.
+Working at TVHS has been great, I've gotten better at communicating and collaborating through the process. TVHS is also my home, I graduated from there in 2019 and I've felt like I've been able to give back to a place that influenced my life profoundly. Part of my impact at TVHS is how I've been able to give many students a lens into the world of Computer Science that they may not have gotten otherwise. At Tech Valley I've been [critical](/m/robotopia.md) to the workings of the school's [FIRST](https://www.firstinspires.org/) robotics team.
 
 [FRC 5881](https://tvhsfrc.org/) is TVHS's FIRST Robotics Competition team. I'm a team Alumnus and mentor. I wear many hats on the robotics team. On paper I'm the "programming mentor", in practice I take on a much wider role across the robot and in team leadership.
 
