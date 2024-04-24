@@ -1,7 +1,14 @@
 target/
 .vscode/
 .git/
+uploads/
 
 .gitignore
 LICENSE*
+README.md
+
+docker-compose.yml
+Dockerfile
+LICENSE
+LICENSE-water
 README.md

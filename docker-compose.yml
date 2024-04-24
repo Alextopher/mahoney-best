@@ -5,3 +5,4 @@ services:
       - "8405:8080"
     volumes:
       - ./uploads:/uploads
+      - ./config.toml:/config.toml
