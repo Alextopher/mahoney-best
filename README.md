@@ -10,17 +10,14 @@ Each service is given it's own top-level url representing a single letter.
 
 | TODO | Path | Meaning    | Description |
 | ---- | ---- | ---------- | ----------- |
+|      | /a   | "admin"    | admin panel |
+|      | /f   | "file"     | simple file upload/download server |
 | xxxx | /m   | "markdown" | markdown renderer |
-|      | /t   | "tiny"     | url shortener |
 |      | /r   | "redirect" | url redirector |
 | xxxx | /s   | "static"   | static files baked into the binary |
-|      | /f   | "file"     | simple file upload/download server |
-|      | /w   | "who"      | ip geo-locator, ip/user agent logger, ip reflector |
+|      | /t   | "tiny"     | url shortener |
 |      | /u   | "user"     | user account management |
-
-## Append-Only
-
-This project is backed by a custom append-only database. I'm able to keep track of all data changes and fall back to any previous state.
+|      | /w   | "who"      | ip geo-locator, ip/user agent logger, ip reflector |
 
 ## Licensing
 

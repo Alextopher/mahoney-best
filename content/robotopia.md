@@ -4,7 +4,7 @@ page-title: "FIRST - mahoney.best"
 
 # Robotics
 
-This page is about my involvement in FIRST. I'm working on posting my informal FRC programming curriculum here, my goal is to get it up by September.
+This page is about my involvement in FIRST. I'm still working on posting my informal FRC programming curriculum, my goal is to get it up by September for FRC REEFSCAPE.
 
 ## Student Experience
 

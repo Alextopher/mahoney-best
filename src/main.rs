@@ -31,6 +31,8 @@ async fn main() -> std::io::Result<()> {
             .wrap(Compress::default())
             .service(services::baked_files())
             .service(services::markdown_service())
+            .service(services::user_service())
+            .service(services::file_service())
             .service(
                 actix_web::web::resource("/robots.txt")
                     .to(|| async { components::robots(&["t", "r", "u", "f", "w"]) }),
@@ -38,6 +40,6 @@ async fn main() -> std::io::Result<()> {
             .service(redirect("/", "/m/home.md"))
     });
 
-    log::info!("Starting server on http://0.0.0.0:80");
-    app.bind("0.0.0.0:80")?.run().await
+    log::info!("Starting server on http://0.0.0.0:8080");
+    app.bind("0.0.0.0:8080")?.run().await
 }

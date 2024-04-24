@@ -1,9 +1,10 @@
-use maud::{html, Render};
+use maud::{html, Render, DOCTYPE};
 
 use crate::components;
 
 use super::Markdown;
 
+/// A portfolio/blog post page.
 pub struct Page<'a> {
     pub uri: &'a str,
     pub title: &'a str,
@@ -13,14 +14,11 @@ pub struct Page<'a> {
 impl Render for Page<'_> {
     fn render(&self) -> maud::Markup {
         html! {
+            (DOCTYPE)
             (components::header(self.title))
             (components::navbar(self.uri))
-            main style {
-                section {
-                    article {
-                        (&self.content)
-                    }
-                }
+            main {
+                (&self.content)
             }
         }
     }

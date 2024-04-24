@@ -1,9 +1,9 @@
+mod blog;
 mod markdown;
-mod page;
 mod robots;
 
+pub use blog::Page;
 pub use markdown::Markdown;
-pub use page::Page;
 pub use robots::robots;
 
 use maud::{html, Markup};

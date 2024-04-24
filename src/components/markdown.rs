@@ -22,12 +22,13 @@ static TS: Lazy<ThemeSet> = Lazy::new(ThemeSet::load_defaults);
 ///
 /// - Render markdown content to HTML (comrak)
 /// - Front Matter Parsing (serde_yaml)
-/// - Syntax Highlighting (syntect & lol_html)
+/// - Syntax Highlighting (syntect)
+/// - Post processing (lol_html)
 /// - Reading time estimation
 ///
 /// # Warning
 ///
-/// HTML is not yet sanitized by this component
+/// HTML is not sanitized by this component
 pub struct Markdown<'a>(pub &'a str);
 
 impl Markdown<'_> {
@@ -203,16 +204,41 @@ fn perform_syntax_highlighting<'a>(ast: &'a Node<'a, RefCell<Ast>>) {
     }
 }
 
+// Adds `target="_blank"` and `rel="noopener"` to all links that lead to external websites
+fn add_target_blank(html: &str) -> String {
+    lol_html::rewrite_str(
+        html,
+        Settings {
+            element_content_handlers: vec![element!("a", |el| {
+                if let Some(href) = el.get_attribute("href") {
+                    if href.starts_with("http") {
+                        el.set_attribute("target", "_blank")?;
+                        el.set_attribute("rel", "noopener")?;
+                    }
+                }
+                Ok(())
+            })],
+            ..Settings::default()
+        },
+    )
+    .expect("a tag rewriting failed")
+}
+
 impl Render for Markdown<'_> {
     fn render(&self) -> maud::Markup {
         let arena = Arena::new();
         let ast = comrak::parse_document(&arena, self.0, &get_comrak_options());
 
+        // Preform transformations on the AST
         perform_syntax_highlighting(ast);
 
+        // Render the AST to HTML
         let mut html = vec![];
         comrak::format_html(ast, &get_comrak_options(), &mut html).unwrap();
         let html = String::from_utf8_lossy(&html);
+
+        // Post processing
+        let html = add_target_blank(&html);
 
         html! {
             (maud::PreEscaped(&html))

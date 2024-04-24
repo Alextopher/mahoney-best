@@ -1,26 +1,31 @@
+use std::sync::Arc;
+
 use actix_identity::Identity;
 use actix_web::{
     dev::HttpServiceFactory,
-    get, post,
+    error::ErrorInternalServerError,
+    post,
     web::{self, redirect},
     HttpMessage, HttpRequest, HttpResponse, Responder,
 };
-use maud::html;
+use maud::{html, DOCTYPE};
 
 use crate::config::Config;
 
 pub fn user_service() -> impl HttpServiceFactory {
     web::scope("/u")
-        .service(login)
+        .service(web::resource("/login").route(web::post().to(login)))
         .service(logout)
-        .service(index)
+        .service(web::resource("/").route(web::get().to(index)))
         .service(redirect("", "/u/"))
 }
 
-#[get("/")]
-async fn index(user: Option<Identity>) -> impl Responder {
+async fn index(user: Option<Identity>, query: web::Query<RedirectQuery>) -> impl Responder {
+    log::debug!("{:?}", query);
+
     if let Some(user) = user {
         html! {
+            (DOCTYPE)
             h1 { "Welcome, " (user.id().unwrap()) "!" }
             form method="post" action="/u/logout" {
                 button { "Logout" }
@@ -28,8 +33,9 @@ async fn index(user: Option<Identity>) -> impl Responder {
         }
     } else {
         html! {
+            (DOCTYPE)
             h1 { "Please login" }
-            form method="post" action="/u/login" {
+            form method="post" action=(format!("/u/login?redirect={}", query.redirect())) {
                 input type="text" name="username" placeholder="Username";
                 input type="password" name="password" placeholder="Password";
                 button { "Login" }
@@ -49,24 +55,25 @@ struct LoginReq {
 /// A query parameter is also accepted, including a redirect URL to send the user to after a successful login.
 ///
 /// If the username and password are correct, then the user's identity is attached to the active session.
-#[post("/login")]
 async fn login(
-    config: web::Data<Config>,
     request: HttpRequest,
+    config: web::Data<Arc<Config>>,
     login: web::Form<LoginReq>,
-    redirect: web::Query<Option<String>>,
-) -> impl Responder {
+    query: web::Query<RedirectQuery>,
+) -> actix_web::Result<impl Responder> {
+    log::debug!("{:?}", query);
+
     // user sends a username and password as json
     if config.check_admin(&login.username, &login.password) {
-        return HttpResponse::Unauthorized().finish();
+        return Ok(HttpResponse::Unauthorized().finish());
     }
 
     // attach a verified user identity to the active session
-    Identity::login(&request.extensions(), "admin".into()).unwrap();
+    Identity::login(&request.extensions(), "admin".into()).map_err(ErrorInternalServerError)?;
 
-    HttpResponse::Found()
-        .append_header(("location", redirect.0.as_deref().unwrap_or("/u/")))
-        .finish()
+    Ok(HttpResponse::Found()
+        .append_header(("location", query.redirect()))
+        .finish())
 }
 
 #[post("/logout")]
@@ -75,4 +82,15 @@ async fn logout(user: Identity) -> impl Responder {
     HttpResponse::Found()
         .append_header(("location", "/u/"))
         .finish()
+}
+
+#[derive(Debug, serde::Deserialize)]
+struct RedirectQuery {
+    redirect: Option<String>,
+}
+
+impl RedirectQuery {
+    fn redirect(&self) -> String {
+        self.redirect.clone().unwrap_or_else(|| "/u/".to_string())
+    }
 }

@@ -2,4 +2,6 @@ services:
   web:
     build: .
     ports:
-      - "8405:80"
+      - "8405:8080"
+    volumes:
+      - ./uploads:/uploads
