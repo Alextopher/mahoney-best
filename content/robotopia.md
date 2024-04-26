@@ -22,6 +22,8 @@ In 2023 I was solely focused on the programming & electronics side of the team. 
 
 In 2024 our lead mentor left the team. In response I've taken on a much larger role in the team's leadership. Adding to my programming/electronics role I've been taking on over-all team management, serving as the glue that holds the team together. I've also found myself also helping the design side of the team, I'm not all that great at CAD or mechanical design but I'm able to bring physics and engineering design principles to them.
 
+I've also created and now maintain/host the [team's website](https://tvhsfrc.org), [source code](https://github.com/FRC5881/web).
+
 ### Other Teams
 
 Other than being a mentor on 5881 I've also opened myself up to assisting other teams.

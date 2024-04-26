@@ -15,6 +15,13 @@ I'm Christopher Mahoney, aka `alextopher` online and this is my handwritten pers
 - [GitHub](https://github.com/Alextopher)
 - [LinkedIn](https://www.linkedin.com/in/alextopher/)
 
+### Other sites on mahoney.best
+
+- [auto pixel art](https://pixel.mahoney.best)
+- [traceroute map](https://trace.mahoney.best)
+
+I intend to migrate these tools into this project.
+
 ## The Short-Story
 
 I'm a life-long learner with a focus on software engineering but with interests that spread across all STEM fields. In addition to software I like astronomy, aerospace, and physics. I graduated from [Clarkson University](https://clarkson.edu) in December 2022 with a B.S. in Computer Science.
