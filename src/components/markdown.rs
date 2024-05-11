@@ -205,19 +205,43 @@ fn perform_syntax_highlighting<'a>(ast: &'a Node<'a, RefCell<Ast>>) {
 }
 
 // Adds `target="_blank"` and `rel="noopener"` to all links that lead to external websites
-fn add_target_blank(html: &str) -> String {
+fn post_process_links(html: &str) -> String {
+    let directs = [("/static/", "/s/"), ("/content/", "/m/")];
+
     lol_html::rewrite_str(
         html,
         Settings {
-            element_content_handlers: vec![element!("a", |el| {
-                if let Some(href) = el.get_attribute("href") {
-                    if href.starts_with("http") {
-                        el.set_attribute("target", "_blank")?;
-                        el.set_attribute("rel", "noopener")?;
+            element_content_handlers: vec![
+                element!("a", |el| {
+                    if let Some(href) = el.get_attribute("href") {
+                        if href.starts_with("http") {
+                            el.set_attribute("target", "_blank")?;
+                            el.set_attribute("rel", "noopener")?;
+                        }
                     }
-                }
-                Ok(())
-            })],
+                    Ok(())
+                }),
+                element!("img", |el| {
+                    if let Some(src) = el.get_attribute("src") {
+                        for (from, to) in &directs {
+                            if src.starts_with(from) {
+                                el.set_attribute("src", &src.replace(from, to))?;
+                            }
+                        }
+                    }
+                    Ok(())
+                }),
+                element!("a", |el| {
+                    if let Some(href) = el.get_attribute("href") {
+                        for (from, to) in &directs {
+                            if href.starts_with(from) {
+                                el.set_attribute("href", &href.replace(from, to))?;
+                            }
+                        }
+                    }
+                    Ok(())
+                }),
+            ],
             ..Settings::default()
         },
     )
@@ -238,7 +262,7 @@ impl Render for Markdown<'_> {
         let html = String::from_utf8_lossy(&html);
 
         // Post processing
-        let html = add_target_blank(&html);
+        let html = post_process_links(&html);
 
         html! {
             (maud::PreEscaped(&html))

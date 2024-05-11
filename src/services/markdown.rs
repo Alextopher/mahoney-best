@@ -1,28 +1,32 @@
 use std::path::PathBuf;
 
-use actix_web::{dev::HttpServiceFactory, get, web, HttpRequest, Responder};
+use actix_web::{
+    dev::HttpServiceFactory,
+    get,
+    web::{self, Data},
+    HttpRequest, Responder,
+};
 use include_dir::{include_dir, Dir};
 use maud::Render;
 
-use crate::components::{self, Markdown};
+use crate::components::{self, Markdown, MarkdownFrontMatter, NavBar};
 
 const CONTENT: Dir = include_dir!("content");
 
 /// Markdown rendering service that functions as the foundation of the site
 pub fn markdown_service() -> impl HttpServiceFactory {
-    web::scope("/m").service(markdown_handler)
-}
-
-#[derive(serde::Deserialize)]
-struct MarkdownFrontMatter {
-    #[serde(rename = "page-title")]
-    title: String,
-    #[serde(default)]
-    hidden: bool,
+    let nav = NavBar::new(&CONTENT);
+    web::scope("/m")
+        .app_data(Data::new(nav))
+        .service(markdown_handler)
 }
 
 #[get("/{filename:.*}")]
-async fn markdown_handler(path: web::Path<PathBuf>, req: HttpRequest) -> impl Responder {
+async fn markdown_handler(
+    path: web::Path<PathBuf>,
+    nav: web::Data<NavBar>,
+    req: HttpRequest,
+) -> impl Responder {
     let path = path.into_inner();
     let file = match CONTENT.get_file(&path) {
         Some(f) => f,
@@ -47,7 +51,7 @@ async fn markdown_handler(path: web::Path<PathBuf>, req: HttpRequest) -> impl Re
         .ok()
         .flatten()
         .unwrap_or_else(|| MarkdownFrontMatter {
-            title: path.file_stem().unwrap().to_string_lossy().to_string(),
+            title: Some(path.file_stem().unwrap().to_string_lossy().to_string()),
             hidden: false,
         });
 
@@ -56,9 +60,12 @@ async fn markdown_handler(path: web::Path<PathBuf>, req: HttpRequest) -> impl Re
     }
 
     let page = components::Page {
-        title: &front_matter.title,
+        title: &front_matter
+            .title
+            .unwrap_or_else(|| path.file_stem().unwrap().to_string_lossy().to_string()),
         content: markdown,
         uri: req.uri().path(),
+        nav: &nav,
     };
 
     Ok(page.render())

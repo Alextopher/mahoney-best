@@ -19,7 +19,7 @@ serde_yaml = "0.9"
 toml = "0.8"
 
 maud = { version = "0.26", features = ["actix-web"] }
-comrak = { version = "0.22", features = ["shortcodes"] }
+comrak = { version = "0.23", features = ["shortcodes"] }
 syntect = "5.2"
 lol_html = "1.2"
 
@@ -28,6 +28,7 @@ actix-web = "4.5"
 actix-session = { version = "0.9", features = ["cookie-session"] }
 actix-identity = "0.7"
 actix-multipart = "0.6"
-futures-util = "0.3.30"
-tempfile = "3.10.1"
-tokio = "1.37.0"
+futures-util = "0.3"
+tempfile = "3.10"
+tokio = "1.37"
+Inflector = "0.11.4"
