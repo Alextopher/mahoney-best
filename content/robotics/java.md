@@ -8,9 +8,9 @@ Second, just start programming on your own, preferably in Java. Learning to code
 
 ## _You_ need to learn Java
 
-Sadly, I don't have enough time on the robotics team to teach every student Java in the way we could in a classroom. Furthermore, at TVHS we don't offer AP CS until Senior year, if it's offered at all. This is a big burden on our team, but it's also a big opportunity. While software engineering is a very collaborative field, _programming_ is extremely individual. My experience learning to code on my own is that my process of learning on my own set me apart from my peers who learned in a classroom.
+Sadly, I don't have enough time on the robotics team to teach every student Java in the way we could in a classroom. Furthermore, at TVHS we don't offer AP CS until Senior year, if it's offered at all. This is a big burden on our team, but it's also a big opportunity. While software engineering is a very collaborative field, _programming_ is extremely individual. In my experience, learning to code set me apart from my peers who only learned in a classroom.
 
-I'm here to **mentor** you on your own journey. When it comes up I'll give one-shot lectures on anything in CS that you need to know.
+I'm here to **mentor** you on your own journey. When it comes up I'll give one-shot lectures on anything in CS that you need to know more about.
 
 To get to the point where you can write FRC code comfortable requires around 100 hours of Java programming experience. From there you'd know enough of the basics that you won't be completely lost on the fundamentals. It isn't a big deal where you get this experience, I would just encourage you to avoid over-reliance on Large Language Models (AI) systems.
 
@@ -22,15 +22,19 @@ Here are a few potential starting points:
 4. [Project Euler](https://projecteuler.net/) - A series of challenging mathematical/computer programming problems that will require more than just programming to solve. For advanced math students this gives you a way to enter the programming world through a familiar lens.
 5. Just start writing code locally for a project you have in mind.
 
+What ever you choose to do you should be 100% invested in it. If you're not having fun, or you're not learning, then you should switch to something else. Around 90% of my programming projects I would consider either "unfinished" or "abandoned", I wouldn't have it any other way.
+
 ### Programming vs Software Engineering
 
 A quick note on terminology.
 
-I use the terms _programming_ and _software engineering_ deliberately to make an important distinction. **Programming** is the act of writing code, while **software engineering** is the act of designing and "engineering" software. To begin with you should just program, get some lines of code written down and see what happens.
+I use the terms _programming_ and _software engineering_ deliberately to make an important distinction. **Programming** is the act of writing code, while **software engineering** is the act of designing and "engineering" software. To begin with you should just program, get some lines of code written down and build cool things.
 
-When we reach the robotics season things will change. In a personal setting you are free to rewrite your code, or stop working on projects, whenever you want. During the season we obviously have a deadline and we want to avoid "just rewrite the robot" as much as possible. So, I put a lot of emphasis on _engineering_ the robot's software. Before we do any programming for the robot it's important to develop a plan and discuss what our requirements are and how we can minimize the complexity of our code while maximizing our flexibility.
+When we reach the robotics season things will change. In a personal setting you are free to rewrite your code, or stop working on projects, whenever you like. During the season we obviously have a deadline and we want to avoid the trap of rewriting the robot the night before competition. This is where software engineering comes in.
 
-When you witness engineers talking to each other they hardly ever about which line of code to write, it's almost always about how we're going to structure the project and what the requirements are. Afterwards, we all split up and implement our little piece of the puzzle.
+I put a lot of emphasis on _engineering_ the robot's software. Before we do any programming for the robot it's important to develop a plan and discuss what our requirements are and how we can minimize the complexity of our code while maximizing our flexibility. I won't go as far as using [waterfall](https://en.wikipedia.org/wiki/Waterfall_model) or [agile](https://en.wikipedia.org/wiki/Agile_software_development) methodologies, but I will insist that we have conversations about what we're going to do before we commit to it.
+
+When you witness engineers talking to each other you'll notice they hardly ever about which line of code to write. It's almost always about how they're going to structure a project and what the requirements are. After agreeing to the big picture we trust each other to program our little pieces of the puzzle on our own.
 
 ## Why Java?
 

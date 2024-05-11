@@ -13,9 +13,13 @@ Before getting started, I want to set norms for our work together. In my opinion
 3. Control Theory (Math)
 4. FRC Ecosystem
 
-Generally speaking, this is the order of topics you should focus on. I have a competitive advantage in learning about the FRC Ecosystem and Control Theory, those topics take a lot of study and experience to master. You have a big reason to learn Java and Abstraction. Java shows up in the AP Computer Science exam, is popular in it's own right, and generally speaking learning any programming language at all is a good investment. Abstraction is the most important concept in computer science, and just problem solving over-all.
+Generally speaking, this is the order of topics you should focus on. I have a competitive advantage in learning about the FRC Ecosystem and Control Theory as those topics take a lot of time master. It's a simple fact that I've been programming for a long time, and I've been doing FRC for much longer than any student has.
 
-**You should focus on learning Java and becoming a better programmer**. I will focus on bringing you up to speed in Control Theory and will make sure that we have the right tools and equipment to succeed. I'm not here to hide anything from you, feel free to make [cheifdelphi](https://www.chiefdelphi.com/) your homepage or read a Control Theory [textbook](https://file.tavsys.net/control/controls-engineering-in-frc.pdf). Just know that you don't need to do those things to be successful in FRC. Your time is best spent learning skills that will be useful to you later in life.
+As a student you have big reasons to learn Java and Abstraction. Java shows up in the AP Computer Science exam, is popular in it's own right, and simply learning any programming language at all is a good idea. Furthermore Abstraction is the most important concept in computer science and in problem solving in general.
+
+**You should focus on learning Java and becoming a better programmer**. I will focus on bringing you up to speed in Control Theory and will make sure that we have the right tools and equipment to succeed. I'm not here to hide anything from you, feel free to make [cheifdelphi](https://www.chiefdelphi.com/) your homepage or read a Control Theory [textbook](https://file.tavsys.net/control/controls-engineering-in-frc.pdf). Just know that you don't need to do those things to be successful in FRC.
+
+Your time is best spent learning skills that will be useful to you later in life.
 
 ## 4 years of FRC
 
@@ -31,4 +35,4 @@ FRC covers all 4 years of high-school. As you progress through the years you wil
 | **Off Season** | Self directed project. Ideally you help build something that pushes the team forward for the benefit of all future generations. |
 | **4th** | A senior's role on the team is more self-directed. Continue programming as you see fit. I encourage you to take on more of a leadership role in the team, and try to have in impact with our wider community. |
 
-It's perfectly fine to take a break or start late. FIRST isn't about "being on track" it's about pushing yourself, wherever you are right now, to discover and innovate. I'm more than happy to get Juniors and Seniors learning Java or give Freshman and Sophomores opportunities to lead, it's not all one size fits all.
+It's perfectly fine to take a break or start late. FIRST isn't about "being on track" it's about pushing yourself, wherever you are right now, to discover and innovate. I'm more than happy to get Juniors and Seniors learning Java or give Freshman and Sophomores opportunities to lead. Nothing here is one size fits all.
