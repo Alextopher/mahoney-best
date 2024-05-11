@@ -64,12 +64,15 @@ nav a {
     color: var(--text-main);
     text-decoration: none;
     transition: color 0.1s;
-    margin-left: 1rem;
+    padding: 0 7px;
 }
 
 nav a:first-child {
-    margin-left: 0;
-    margin-right: auto;
+    padding-left: 0;
+}
+
+nav a:last-child {
+    padding-right: 0;
 }
 
 nav a:hover {

@@ -1,34 +1,34 @@
 ---
-page-title: "FRC - mahoney.best"
-hidden: true
+page-title: "FRC Programming"
 ---
 
-# FRC Programming Curriculum
+# FRC Programming
 
-> ⚠️ _WORK IN PROGRESS_ ⚠️
+Welcome to FIRST Robotics Competition (FRC) programming! I'm very excited to work together with you. FIRST is not just about building robots, it's about building ourselves and recognizing the impact of science and technology. FRC programming requires a lot of teamwork. Teamwork between disciplines, between students, and between mentors.
 
-Right now I've got an informal FRC programming curriculum that I rely on. The trouble is, that it's all in my head. These pages are an attempt to get these lessons out of my head and into a form that can be shared with others.
+Before getting started, I want to set norms for our work together. In my opinion there are 4 pillars of FRC programming. These are:
 
-Generally there are 4 main topics I cover:
+1. [Java](/content/robotics/java.md)
+2. Command Based Programming (Abstraction)
+3. Control Theory (Math)
+4. FRC Ecosystem
 
-## Java
+Generally speaking, this is the order of topics you should focus on. I have a competitive advantage in learning about the FRC Ecosystem and Control Theory, those topics take a lot of study and experience to master. You have a big reason to learn Java and Abstraction. Java shows up in the AP Computer Science exam, is popular in it's own right, and generally speaking learning any programming language at all is a good investment. Abstraction is the most important concept in computer science, and just problem solving over-all.
 
-The language we use to write the robot's code, and it's something I don't have enough time to teach fully. I think AP Computer Science is the right level to be proficient enough to write FRC code on your own. That's a year long course and generally only available to Seniors on my team. So, I try to share resources they can use to learn the basics of Java on their own time, and I help them with their journey. I typically do 1-on-1 workshops with students when they need more programming help.
+**You should focus on learning Java and becoming a better programmer**. I will focus on bringing you up to speed in Control Theory and will make sure that we have the right tools and equipment to succeed. I'm not here to hide anything from you, feel free to make [cheifdelphi](https://www.chiefdelphi.com/) your homepage or read a Control Theory [textbook](https://file.tavsys.net/control/controls-engineering-in-frc.pdf). Just know that you don't need to do those things to be successful in FRC. Your time is best spent learning skills that will be useful to you later in life.
 
-## Control Theory
+## 4 years of FRC
 
-The math behind how we make the robot move. I cover Kinematics, Feedback Control (reinventing PID), Feed-forward Control, System Identification, and Motion Profiling.
+FRC covers all 4 years of high-school. As you progress through the years you will naturally take on more responsibility and learn more advanced topics. This isn't a hard and fast rule but generally this I how I imagine your progression on the team:
 
-I adapt the material to the particular group of students I'm working with, but generally I've simplified the material down to Algebra 1 and basic Trigonometry (sin, cosine, and tan). During the season I'll often hint at the existence of Calculus because I think PID is a great way to "discover" Calculus in a natural way.
+| Year | Focus |
+|:-----|:------|
+| **1st** | Getting familiar with the robot and the team. Unless if you're entering with substantial Java experience you're unlikely to be contributing to the robot code. **You should focus on having fun and determining if programming is right fit for you.** |
+| **Off Season** | Before entering your Sophomore year it would be ideal if you started programming on your own and got somewhere around 100 hours of Java experience. Fluency in Java is a prerequisite for writing robot code. |
+| **2nd** | Now that you're comfortable with the team and have some Java experience you can start writing code for the robot. You'll be apart of programming discussion and will have opportunities to contribute to the robot code. I'll also start introducing to the FRC Ecosystem and Control Theory. |
+| **Off Season** | Going into your Junior year I run a robot simulation project. This project is all about building the right abstractions and identifying the right control theory principles to solve a previous year's game. The goal is to build confidence in your ability to program a robot, all on your own. |
+| **3rd**| Starting your Junior year you can have a profound impact in the direction of the robot. With a solid understanding of Java and abstraction you can simply just look at a robot and get a sense of all of the Subsystems and Commands needed to make it work. In addition to writing code you should consider taking more of a leadership role in one of the 4 pillars. Consider learning advanced Java concepts, becoming a master of abstraction, diving deeper into controls, or learning more about the FRC Ecosystem. |
+| **Off Season** | Self directed project. Ideally you help build something that pushes the team forward for the benefit of all future generations. |
+| **4th** | A senior's role on the team is more self-directed. Continue programming as you see fit. I encourage you to take on more of a leadership role in the team, and try to have in impact with our wider community. |
 
-The way I handle Control Theory is through 1 or 2 intense lectures. I don't ask students to memorize any of the material. My goal is that when we reach a problem that requires Control Theory I'll be able to just hand over the answer and they would have seen it before. With some repetition I hope that upperclassmen will grow to be able to solve these problems on their own.
-
-## Command Based Programming
-
-Command Based Programming is the WPILib framework we use to structure our robot code. It's all about creating abstractions for the robot's subsystems and building commands to control them. Command Based Programming is really such a great way to teach Object Oriented Programming and composition.
-
-I want to grow this the audience for this topic. I think all students, even the more mechanically inclined, could benefit from seeing a software engineer's perspective on subsystem and commands.
-
-## FRC Ecosystem
-
-An understanding the FRC ecosystem including vendor libraries and WPILib. Generally this can only come with experience and it also requires keeping up with the latest tools and techniques. I try to keep up with the latest tools and techniques and serve as a encyclopedia for the team.
+It's perfectly fine to take a break or start late. FIRST isn't about "being on track" it's about pushing yourself, wherever you are right now, to discover and innovate. I'm more than happy to get Juniors and Seniors learning Java or give Freshman and Sophomores opportunities to lead, it's not all one size fits all.

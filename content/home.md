@@ -1,7 +1,3 @@
----
-page-title: "mahoney.best"
----
-
 # mahoney.best
 
 I'm Christopher Mahoney, aka `alextopher` online and this is my handwritten personal website.
@@ -18,7 +14,7 @@ I'm Christopher Mahoney, aka `alextopher` online and this is my handwritten pers
 ### Other sites on mahoney.best
 
 - [auto pixel art](https://pixel.mahoney.best)
-- [traceroute map](https://trace.mahoney.best)
+- [trace-route map](https://trace.mahoney.best)
 
 I intend to migrate these tools into this project.
 

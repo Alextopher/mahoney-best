@@ -1,5 +1,5 @@
 ---
-page-title: "FIRST - mahoney.best"
+page-title: "FIRST"
 ---
 
 # Robotics
