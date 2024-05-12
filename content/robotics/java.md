@@ -34,7 +34,7 @@ When we reach the robotics season things will change. In a personal setting you 
 
 I put a lot of emphasis on _engineering_ the robot's software. Before we do any programming for the robot it's important to develop a plan and discuss what our requirements are and how we can minimize the complexity of our code while maximizing our flexibility. I won't go as far as using [waterfall](https://en.wikipedia.org/wiki/Waterfall_model) or [agile](https://en.wikipedia.org/wiki/Agile_software_development) methodologies, but I will insist that we have conversations about what we're going to do before we commit to it.
 
-When you witness engineers talking to each other you'll notice they hardly ever about which line of code to write. It's almost always about how they're going to structure a project and what the requirements are. After agreeing to the big picture we trust each other to program our little pieces of the puzzle on our own.
+When you witness engineers talking to each other you'll notice they hardly ever speak about which line of code to write. It's almost always about how they're going to structure a project and what the requirements are. After agreeing to the big picture we trust each other to program our little pieces of the puzzle on our own.
 
 ## Why Java?
 
