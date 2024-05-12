@@ -10,7 +10,6 @@ I'm Christopher Mahoney, aka `alextopher` online and this is my handwritten pers
 
 - [GitHub](https://github.com/Alextopher)
 - [LinkedIn](https://www.linkedin.com/in/alextopher/)
-- [Resumé](/static/resume.pdf)
 
 ### Other sites on mahoney.best
 
