@@ -50,9 +50,8 @@ async fn markdown_handler(
         })
         .ok()
         .flatten()
-        .unwrap_or_else(|| MarkdownFrontMatter {
-            title: Some(path.file_stem().unwrap().to_string_lossy().to_string()),
-            hidden: false,
+        .unwrap_or_else(|| {
+            MarkdownFrontMatter::with_title(path.file_stem().unwrap().to_string_lossy())
         });
 
     if front_matter.hidden {

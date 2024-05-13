@@ -14,14 +14,28 @@ pub struct MarkdownFrontMatter {
     pub title: Option<String>,
     #[serde(default)]
     pub hidden: bool,
+    pub order: Option<i32>,
+}
+
+impl MarkdownFrontMatter {
+    /// Creates a new "front matter" with a title.
+    ///
+    /// hidden is assumed `false` and order is assumed `None`.
+    pub fn with_title(title: impl Into<String>) -> Self {
+        Self {
+            title: Some(title.into()),
+            hidden: false,
+            order: None,
+        }
+    }
 }
 
 /// The content directory is at most 2 levels deep.
 #[derive(Debug)]
 pub struct NavBar(pub HashMap<&'static str, Vec<(String, String)>>);
 
-fn get_title(dir: &File) -> Option<String> {
-    let content = std::str::from_utf8(dir.contents()).unwrap();
+fn get_info(f: &File) -> Option<(String, Option<i32>)> {
+    let content = std::str::from_utf8(f.contents()).unwrap();
     let markdown = Markdown(content);
     let front_matter = markdown
         .front_matter::<MarkdownFrontMatter>()
@@ -35,13 +49,17 @@ fn get_title(dir: &File) -> Option<String> {
         }
     }
 
-    Some(front_matter.and_then(|m| m.title).unwrap_or_else(|| {
-        dir.path()
+    let order = front_matter.as_ref().and_then(|f| f.order);
+
+    let title = front_matter.and_then(|f| f.title).unwrap_or_else(|| {
+        f.path()
             .file_stem()
             .unwrap()
             .to_string_lossy()
             .to_title_case()
-    }))
+    });
+
+    Some((title, order))
 }
 
 impl NavBar {
@@ -54,18 +72,25 @@ impl NavBar {
         for dir in dirs {
             let key = dir.path().to_str().unwrap();
 
-            let paths: Vec<String> = dir
+            let paths = dir
                 .files()
-                .map(|f| format!("/m/{}", f.path().to_str().unwrap()))
-                .collect();
-            let titles: Vec<Option<String>> = dir.files().map(|f| get_title(f)).collect();
+                .map(|f| format!("/m/{}", f.path().to_str().unwrap()));
 
-            // Zip the paths and titles together, and skip the hidden files.
-            let results = paths
+            let mut info: Vec<(String, Option<i32>, String)> = dir
+                .files()
+                .map(|f| get_info(f))
+                .zip(paths)
+                .filter_map(|(info, p)| info.map(|(title, order)| (title, order, p)))
+                .collect::<Vec<_>>();
+
+            info.sort_by_key(|(_, order, _)| order.unwrap_or(i32::MAX));
+
+            let results = info
                 .into_iter()
-                .zip(titles)
-                .filter_map(|(p, t)| t.map(|t| (p, t)))
+                .map(|(title, _, path)| (path, title))
                 .collect();
+
+            println!("{:?}", results);
 
             tree.insert(key, results);
         }
