@@ -10,7 +10,7 @@ Welcome to FIRST Robotics Competition (FRC) programming! I'm very excited to wor
 Before getting started, I want to set norms for our work together. In my opinion there are 4 pillars of FRC programming. These are:
 
 1. [Java](/content/robotics/java.md)
-2. Command Based Programming (Abstraction)
+2. [Command Based Programming](/content/robotics/commands.md) (Abstraction)
 3. Control Theory (Math)
 4. FRC Ecosystem
 
