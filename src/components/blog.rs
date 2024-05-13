@@ -90,8 +90,6 @@ impl NavBar {
                 .map(|(title, _, path)| (path, title))
                 .collect();
 
-            println!("{:?}", results);
-
             tree.insert(key, results);
         }
 
