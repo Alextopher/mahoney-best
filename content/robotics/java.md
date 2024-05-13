@@ -1,3 +1,7 @@
+---
+order: 1
+---
+
 # Java Programming
 
 If you just joined FRC 5881 as a new student you're very unlikely to be ready to write robot code. There are 2 things you need before you can really get started.
