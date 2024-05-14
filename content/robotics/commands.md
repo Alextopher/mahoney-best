@@ -134,9 +134,9 @@ Let's throw a wrench in this design, we test the code on our robot and we learn 
 
 > 3 weeks later...
 
-Build team decides that the best way to fix this issue to add a second motor to the climber's axle. This is a decent choice, adding a motor on the opposite side of an axle is an quick and easy way to increase a mechanism's torque.
+Build team decides that the best way to fix this issue is to add a second motor to the climber's axle. This is a decent choice, adding a motor on the opposite side of an axle is an quick and easy way to increase a mechanism's torque.
 
-Here's how we would change the code:
+Here's how we could change the code:
 
 ```diff
 /**
@@ -247,11 +247,13 @@ The following charts demonstrate the scheduler's behavior when faced with a conf
 
 ![kCancelIncoming](/static/img/gantt-3.png)
 
+> Notice how we lost E and C.
+
 #### Miscellaneous Notes
 
 Commands requiring multiple subsystems are allowed, and encouraged! Commands F and G in the above charts are examples.
 
-A Commands can safely require 0 subsystems. `Commands.waitSeconds(double t)` is a common example of a command that doesn't require any subsystems.
+A command can safely require 0 subsystems. `Commands.waitSeconds(double t)` is a common example of a command that doesn't require any subsystems.
 
 ### Lifecycle of a `Command`
 
@@ -264,15 +266,15 @@ A Commands can safely require 0 subsystems. `Commands.waitSeconds(double t)` is 
 
 ![alt text](/static/img/gantt-4.png)
 
-> When referring to thing that come into and out of existence programmers use euphemisms like "life-cycle", "born", "died", or "killed". This is to just convey this relatively complicated concept in a way we're already pre-programmed to understand.
+> When referring to things "that come into and out of existence" programmers will use euphemisms like "life-cycle", "born", "died", or "killed". This is to just convey this relatively complicated concept in a way that we're already familiar with.
 
-_Back in my day_ all commands were written explicitly by writing out these 4 methods. I had a rule on the team (that is still enforced) that every command that is defined with this pattern must write all 4 methods instead of relying on the default implementations.
+**_Back in my day_** all commands were written explicitly by writing out these 4 methods. I had a rule on the team (that is still enforced) that every command that is defined with this pattern must write all 4 methods instead of relying on the default implementations.
 
-It's sometimes still necessary to write commands this way, but nowadays WPILib has a lot of helper classes to make writing commands easier. Let's take a look at some examples to get familiar to the pattern.
+It is sometimes still necessary to write commands this way, but nowadays WPILib has a lot of helper classes to make writing commands easier. Let's take a look at some examples to get familiar with writing long-form commands.
 
-#### Long-form Command examples
+#### Long-form Command Examples
 
-While showing off some commands I want to introduce you to 3 common patterns we use when thinking about commands.
+In the meantime I also want to introduce you to 3 common patterns we use when thinking about commands.
 
 - Infinite Commands
 - Finite Commands
@@ -280,7 +282,7 @@ While showing off some commands I want to introduce you to 3 common patterns we 
 
 ```java
 /**
- *  While ran this command extends the climber
+ * While ran this command extends the climber
  */
 public class ExtendClimberCommand extends Command {
     private final ClimberSubsystem climber;
@@ -403,15 +405,15 @@ public class ClimberSetPointCommand {
 
 This can be a decent trade-off to make, especially when:
 
-- If your control loop is complex enough might want to consider running it on a separate thread
-- Offloading a control loop to a motor controller often means it can run at a higher frequency (1000 Hz on a SparkMAX)
-- Your subsystem only has a single mode of control
+- Your control loop is complex enough that you want to consider running it on a separate thread.
+- Offloading a control loop to a motor controller often means it can run at a higher frequency (1000 Hz on a SparkMAX).
+- Your subsystem only has a single mode of control.
 
 ### WPILib "New Commands"
 
-That was a lot! I'm not sure about you, but I got tired of writing commands like this [back in 2018](https://github.com/FRC5881/2018Robot/tree/master/src/main/java/org/techvalleyhigh/frc5881/powerup/robot/commands). Luckily, new versions of WPILib supports something called "Command Compositions". These are powerful tools that allow us to build complex commands out of smaller parts.
+That was a lot! I'm not sure about you, but I got tired of writing commands like this [back in 2018](https://github.com/FRC5881/2018Robot/tree/master/src/main/java/org/techvalleyhigh/frc5881/powerup/robot/commands). Luckily, new versions of WPILib support something called "Command Compositions". These are powerful tools that allow us to build complex commands out of smaller parts.
 
-> "Composition" is a heavily overloaded term in programming, here we're using it to mean "building complex things out of simpler parts".
+"Composition" is the same word we use in Math to describe building complex functions out of simpler parts. In this statement `h(x) = f(g(x))`, `h` is a "composition", of `f` and `g`.
 
 Let's take a look at how we could rewrite `ExtendClimberCommand`, `ClimberToHeightCommand`, and `ClimberSetPointCommand` using the modern command framework:
 
@@ -456,47 +458,54 @@ public class ClimberSubsystem extends Subsystem {
 
 This next bit is the most common error I see when people are learning the new command framework.
 
-**Every time you call a command factory you're not yet preforming the specified action.** Rather you're kind of "setting up" the action to be preformed later. The `Command` is not actually ran until it is scheduled, often by a `Trigger` or with the `Comamnd.schedule()` method.
+**Every time you call a command factory you're not yet preforming the specified action.** Rather you're kind of "setting up" the action to be preformed later. The `Command` is not actually ran until it is scheduled, often by a `Trigger` or with the `Comamnd.schedule()` method. Just like `Commands` the robot as an overall system is kind of like a state-machine.
 
-This is important to understand, just like `Commands` the robot overall is sort of like a state-machine. The first phase the robot is "setup", this is where all of the `Triggers`, `Subsystems`, and `Commands` are created. This is pretty much the code you see in `RobotContainer`.
+The very first thing the robot does is "setup" and create all of the `Triggers`, `Subsystems`, and `Commands` defined in `RobotContainer`.
 
-The next phases all happen in a loop.
+The next phases all happen in a repeating loop.
 
-1. All of the `Triggers` are checked to see if any commands need to be started or canceled. "Starting" command is not thing as creating a `new Command()`, objects are reused and recycled for better performance.
-2. All of the active `Command`s state machines and advanced.
+1. All of the `Triggers` are checked to see if any commands need to be started or canceled.
+2. All of the active `Command`s state machines are advanced.
 3. All of the `Subsystems` `void periodic() { ... }` methods are called.
 4. Data is sent over the network to the driver station.
 
+> "Starting" a command is not thing as creating a `new Command()`, objects are reused and recycled for better performance.
+>
 > Don't rely on the exact order of these phases. It's not well defined exactly when each phase happens, just know they all happen once per tick!
 
 This new-command framework brings us closer to a "declarative" style of programming as opposed to the "imperative" style we were using before. Both styles are capable of doing the same things, but each requires a different mindset. Both have their places, we'll often use the old command style for our driver controls because they're easier think through step-by-step.
 
 ### Composing Commands
 
-Up to this point we've only talked about commands that complete a single action. But what if we want to do multiple things at once? Think "run the shooter until it reaches speed then run the indexer". These actions are still 'commands' (they have a start and end) but their complexity scales much faster than the simple commands we've seen so far. "run the shooter until it reaches speed then run the indexer" would probably be like 80 lines of code if we wrote it out long-form.
+Up to this point we've only talked about commands that complete a single action. It begs the question, what if we want to do multiple things at once, or in sequence? Think "run the shooter until it reaches speed then run the indexer". This action is still a `Command` (it has a start and end) but it's more complex compared to anything we've seen thus far.
+
+This command could very well be written out long-form, but from experience I can tell you it would probably be like 40-50 lines of code in it's own right. It would also be very difficult to change. **The complexity of writing a long-form command scales unmanageably**.
 
 What would be better is if we could split long-form commands into the smaller parts they are clearly composed of.
 
 - "run shooter"
 - "until it reaches speed"
-- "run indexer"
+- and then "run indexer"
 
 These 3 commands are all very simple
 
 ```java
 public class ShooterSubsystem extends Subsystem {
     public Command cRun() {
+        // infinite command
         return runEnd(this::run, this::stop);
     }
 
     public Command cUntilSpeed(double speed) {
         // This command has no `requirement`, defining it this way means it can run in parallel to `cRun`
+        // finite command
         return Commands.waitUntil(() -> getSpeed() > speed);
     }
 }
 
 public class IndexerSubsystem extends Subsystem {
     public Command cRun() {
+        // infinite command
         return runEnd(this::run, this::stop);
     }
 }
@@ -524,8 +533,8 @@ public class RobotContainer {
 }
 ```
 
-Check the [WPILib documentation](https://docs.wpilib.org/en/stable/docs/software/commandbased/command-groups.html) for a deeper introduction.
+Read the [WPILib documentation](https://docs.wpilib.org/en/stable/docs/software/commandbased/command-groups.html) for a deeper introduction into the most common command compositions.
 
-Check the [`Commands` Java docs](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/Commands.html) for a complete list of factories on the `Commands` class.
+Check the [`Commands` Java docs](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/Commands.html) for a complete list of factories on the `Commands` utility class.
 
 Check the [`Command` Java docs](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/Command.html) for a complete list of decorators that can be called on a `Command`.
