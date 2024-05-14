@@ -7,13 +7,17 @@ order: 2
 
 "Command Based Programming" is the design pattern we use to structure our robot code. We use abstraction to separate our robot into modular chunks.
 
-I like to preface this section by reminding you that robots are complex systems, built from very dumb parts. The "robot" is not at all intelligent, it's just a collection of sensors and actuators that are themselves mostly made of metal and plastic. The most fundamental control of our robot is setting voltages and reading voltages. Everything else is just a layer of abstraction on top of voltages.
+I like to preface this section by reminding you that robots are complex systems, built from very dumb parts. The "robot" is not at all intelligent, it's just a collection of sensors and actuators that are themselves mostly made of metal and plastic. The most fundamental control of our robot is setting voltages and reading voltages. Everything cool our robots do are built on top of this simple foundation.
 
 > Read more about abstraction in Computer Science: <https://en.wikipedia.org/wiki/Abstraction_(computer_science)>.
 
+In wide strokes, Command Based Programming asks of us to separate our robot into "Subsystems" and "Commands". Subsystems are the 'parts' of the robot, like the drivetrain, the shooter, or the climber. Commands are the 'actions' of the robot, anything the robot does is a accomplished by running a Command.
+
 ## Subsystems
 
-The first step to programming a robot is identifying in what way we should group up sensors and actuators into "Subsystems". In the 2023-2024 season our robot had 14 motors, 4 absolute encoders, 1 gyro/imu, 1 proximity IR sensor, and an LED controller. We grouped these into 7 subsystems:
+The first step to programming a robot is identifying how we should group up all of the sensors and actuators into "Subsystems". In the 2023-2024 season our robot had 14 motors, 4 absolute encoders, 1 gyro/imu, 1 proximity IR sensor, and an LED controller. This short list is all the information our robot's controller has access to, all alone it doesn't convey enough information about how to create the robot's intended behavior. Our first step is assigning each sensor and actuator a "meaning" and grouping them into subsystems.
+
+We designed 7 subsystems for our robot:
 
 - Drivetrain
   - 4 drive motors
@@ -34,19 +38,19 @@ The first step to programming a robot is identifying in what way we should group
 - LEDs
   - 1 LED controller
 
-Notice how each actuator and sensor is only in one subsystem. This is a _requirement_ of the Command Based Programming framework. If two subsystems required the same motor, then we would have to deal with the two systems fighting with each other. Imagine 1 subsystem trying to drive forward while the other tries to drive backwards. That could cause very erratic and dangerous behavior.
+Each actuator and sensor is assigned to at-most one subsystem. This disjointedness is a _requirement_ of the Command Based Programming framework. For actuators this is a safety feature, it prevents the robot from doing dangerous things like trying to drive forward and backwards at the same time. For sensors this is just a product of how the underlying control system works and a limitation of the RoboRIO, nonetheless it's a good practice to follow anyhow.
 
-Separating the robot into subsystems is a way to enforce modularity. Each subsystem is responsible for controlling its own actuators and reading its own sensors. This makes it easier to reason about the robot's behavior and to test each subsystem in isolation. During build season modularity is critical because we're often only going to have access to partially assembled robots. Being able to test our climber without our shooter gives us more opportunities to test at all. Potentially we can find design issues earlier in the season and adjust.
+Another benefit of this separation is we've created modularity. Modularity is critical in software engineering, and especially in FRC. Since each subsystem is individually responsible for controlling its own actuators and sensors we're able to (ideally) test each subsystem in isolation. This is a great feature to have during the build season when the robot is constantly changing. Being able to test our climber and shooter independently means we'll be able to test them each as soon as they are ready, rather than waiting for the whole robot to be assembled.
 
 ### Private vs Public Methods
 
-The biggest constraint in FRC is time. Especially on programming team, we won't always have access to the robot to test our code. Robots are constantly getting disassembled and reassembled, and generally "building the robot" is a higher priority than "programming the robot". Build team has a habit of making near constant design changes to the robot. One day we'll have a climber with 1 motor and a limit switch and the next it will be 2 motors and a laser rangefinder, or a shooter with 1 flywheel to a shooter with 2. Programming team is working at our best when we're able to respond to those changes quickly.
+The biggest constraint in FRC is time. Especially on programming team, as a rule **"building the robot" has a higher priority than "programming the robot"**. At the end of the day, assuming there is enough coffee, the programming mentors can program the entire robot in a single night. Obviously this isn't ideal, but the alternative of not having a built robot is worse.
 
-Fundamentally, changing from a 1-motor climber to a 2-motor climber doesn't really change the robot's intended behavior. No matter how many motors are on the climber we still expect it to _move up_ and _move down_. A climber could be built with a winch, a scissor lift, a telescoping arm, or a pneumatic piston and it would still _move up_ and _move down_. A shooter that has 1 wheel or 2 wheels still _shoots_. A ground intake that uses CTRE Falcon motors or REV Neo motors still _intakes_. Hopefully you can see the pattern here, no matter how we "implement" a subsystem they typically have the same "intended behavior".
+Paired with not having enough access to the robot, build team has a habit of making near constant design changes to the robot. One day we'll have a climber with 1 motor and a limit switch and the next it will be 2 motors and a laser rangefinder. One day we have a shooter with 1 flywheel and then the next it's a shooter with 2 flywheels and an indexer. Programming team is working at it's best when we're able to quickly respond to large changes.
 
-As you become stronger programmers you find your focus shifts from low level implementation details to high level behavior. Great software engineering teams hardly ever talk about the specifics of what lines of code to write. We spend less time talking about whether you should use a `switch` statement or an `if` statement and more time talking about requirements and design.
+Fundamentally, changing from a "1-motor climber" to a "2-motor climber" doesn't really change the robot's intended behavior. No matter how many motors are on the climber we still assume the climber is going to _move up_ and _move down_. **A climber could be built with a winch, a scissor lift, a telescoping arm, or a pneumatic piston and it would still _move up_ and _move down_**. A shooter that has 1 wheel or 2 wheels still _shoots_. A ground intake that uses CTRE Falcon motors or REV Neo motors still _intakes_. You should be able to see the pattern here, no matter how we _implement_ a subsystem it typically has the same "intended behavior".
 
-Writing a subsystem generally turns into a 2 step process:
+Writing a subsystem is a 2 step process:
 
 1. Write the "Public API" of the subsystem. This is writing stubs for the `public` methods that the subsystem should have.
 
@@ -62,7 +66,8 @@ Let's look at an example:
  */
 public class ClimberSubsystem extends Subsystem {
     // This climber has 1 motor and it's driven with a SparkMAX
-    // Notice: `private` means this is an implementation detail
+    // Notice: `private` in Java means `motor` is only accessible within this class, 
+    // that makes it an "implementation detail"
     private CANSparkMax motor = new CANSparkMax(ClimberConstants.kClimberMotor);
 
     public Climber() {
@@ -107,8 +112,7 @@ public class ClimberSubsystem extends Subsystem {
 }
 
 /**
- * RobotContainer is where we use subsystems and commands. It's where we connect
- * controllers to subsystems.
+ * RobotContainer is where we connect driver controllers to Subsystems and Commands.
  */
 public class RobotContainer {
     private final ClimberSubsystem climber = new ClimberSubsystem();
@@ -124,9 +128,13 @@ public class RobotContainer {
 }
 ```
 
-Here we have a very simple robot, it only has a climber that extends and retracts. It does this by running the climber at either 50%, -50% (reverse), and then 0% (stopping) when nothing is commanded.
+Other than some missing imports and boiler plate this program defines a _real_ FRC Robot. It's very simple, it only has a climber that extends and retracts. Extending and retracting is implemented by running the climber motor at 50% power or -50% power, respectively. Looks great!
 
-Let's throw a wrench in this design, build team has decided they want to add a second motor to the climber axle. Adding a motor on the opposite side of the climber is an easy way to increase a mechanism's power.
+Let's throw a wrench in this design, we test the code on our robot and we learn that the climber is far to weak to lift the robot. The first change we make is increasing the power of the climber motor from 50% to 100%. Sadly, this doesn't fix the problem, we send it back to build team...
+
+> 3 weeks later...
+
+Build team decides that the best way to fix this issue to add a second motor to the climber's axle. This is a decent choice, adding a motor on the opposite side of an axle is an quick and easy way to increase a mechanism's torque.
 
 Here's how we would change the code:
 
@@ -144,13 +152,13 @@ public class ClimberSubsystem extends Subsystem {
     }
 
     private extend() {
-        motor.set(0.5);
-+       motor2.set(-0.5);
+        motor.set(1.0);
++       motor2.set(-1.0);
     }
 
     private retract() {
-        motor.set(-0.5);
-+       motor2.set(0.5);
+        motor.set(-1.0);
++       motor2.set(1.0);
     }
 
     private stop() {
@@ -178,8 +186,7 @@ public class ClimberSubsystem extends Subsystem {
 }
 
 /**
- * RobotContainer is where we use subsystems and commands. It's where we connect
- * controllers to subsystems.
+ * RobotContainer is where we connect driver controllers to Subsystems and Commands.
  */
 public class RobotContainer {
     private final ClimberSubsystem climber = new ClimberSubsystem();
@@ -193,31 +200,48 @@ public class RobotContainer {
 }
 ```
 
-Notice how we didn't have to change the `RobotContainer` at all. The `RobotContainer` class only knows about the `ClimberSubsystem`'s public methods, and therefore it just _doesn't care_ how the climber is implemented. It only cares that the climber can extend and retract. This is climber's _contract_ and it's an example of abstraction.
+Notice a few things:
+
+1. `RobotContainer` has _no changes_. This is because we haven't changed the meaning of the climber, it still "extends" and "retracts".
+2. The signature of `ClimberSubsystem`'s public methods haven't changed either _anyone else_ who uses the climber would not be aware that a change occured.
+3. Within the `ClimberSubsystem` we had a sufficient level of abstraction that implementation was easy to write and straightforward to understand.
 
 ## Commands
 
-If "subsystems" represent the _nouns_ of our robot then "commands" represent the _verbs_. If you can say "the robot has a climber" then that implies `ClimberSubsystem` should exist. Saying "the climber can extend and retract" implies the existence of 2 `Command`s, "climber extend" and "climber retract". WPILib commands have a lot of depth, they're designed to both represent simple single action commands like `LedSubsystem::setColor(Color c)` to larger composable actions like `ShooterSubsystem::runAfterReachingSpeed(Velocity v, Command c)` up to award winning autonomous routines. All of those actions are commands.
+**If "subsystems" represent the _nouns_ of our robot then "commands" represent the _verbs_.**
+
+Say you're describing your robot to a parent or a sponsor. You might say things like "our robot has a climber" and "the climber extends and retracts". The first statement implies the existence of `ClimberSubsystem` - something that controls the climber. The second statement implies the existence of 2 commands, "climber extend" and "climber retract".
+
+Commands in WPILib have been design to work well at any depth. Complex statements like "during autonomous the robot drives forward and then picks up the nearest 2 game pieces and scores them" also implies the existence of another Command "drive forward and score 2". **_Any_ action the robot preforms must be represented by a single Command**.
 
 ### Scheduling
 
-Commands are ran by the "Command Scheduler". By default the scheduler runs every 20ms (50 Hz) and each "tick" running commands are processed. The scheduler enforces what I call the "law of commands", which states "at all times each `Subsystem` can only be required by at most 1 `Command`". This is a safety feature to prevent the robot from doing dangerous things like trying to drive forward and backwards at the same time.
+Commands are ran by the "Command Scheduler". By default the scheduler runs every 20ms (50 Hz) and each "tick" running commands are processed. The scheduler enforces a very simple rule **"each `Subsystem` can only be required by at most 1 `Command`"**. This is a safety feature to prevent the robot from doing dangerous things like trying to drive forward and backwards at the same time.
 
-In order to enforce this law Commands must accurately communicate their subsystem requirements to the scheduler. If 2 commands require the same subsystem then the scheduler will "cancel" one of the commands.
+In order to enforce this rule commands must communicate their subsystem requirements to the scheduler. If 2 commands require the same subsystem then the scheduler will "cancel" one of the commands before running the other.
 
-When dealing with any kind of "scheduler" we often will make Gantt Charts to help visualize timelines. On these charts the horizontal axis represents time and each subsystem gets a unique row. Commands are represented as blocks of time where the subsystem is required.
+When dealing with any kind of "scheduler" it's nice to use Gantt Charts to help visualize timelines. On these charts the horizontal axis represents time and each subsystem gets a unique row. Commands are represented as blocks of time where the subsystem is being required.
 
 Here's a simple example:
 
 ![Single Requirement Gantt Chart](/static/img/gantt.png)
 
-Notice how none of the Red blocks overlap, this is because of the "law of commands". Overlapping commands like this are forbidden.
+**Notice how none of the Red blocks overlap**. Overlapping commands are forbidden. This next chart shows an impossible schedule:
 
 ![Invalid Schedule](/static/img/gantt-1.png)
 
-Here we have 2 conflicts, commands D and E conflict and commands C and F conflict. When presented with this situation the scheduler has to make a choice about which command to run. This choice is defined by the first command's [interrupt behavior](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/Command.InterruptionBehavior.html)
+- Commands D and E are in conflict
+- Commands C and F are in conflict
 
-By default the scheduler will interrupt the existing command and start running the new command `kCancelSelf`. Important commands can be marked as `kCancelIncoming` which will ignore the new command and continue running the existing command. `kCancelIncoming` should only be used rarely because of how it "eats" robot controls. The following charts shows the scheduler's behavior when faced with a conflict:
+When presented with this situation the scheduler has to make a choice about which command to run. This choice is defined by the first command's [interrupt behavior](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/Command.InterruptionBehavior.html)
+
+By default the scheduler will `interrupt` the existing command and start running the new command, this is called `kCancelSelf`.
+
+Important commands can be marked as `kCancelIncoming` which will ignore the new command and continue running the existing command. You should use `kCancelIncoming` sparingly, especially during teleop. Cancelling new commands leads to situations where the robot feels unresponsive to the driver. Typically, we'd rather communicate to the driver any kind of pre-condition required to safely operate the robot, rather than forbidding them from doing something. Let them make risky decisions when it makes sense.
+
+> Winning an important match is almost always worth the risk of damaging a replaceable part of the robot.
+
+The following charts demonstrate the scheduler's behavior when faced with a conflict:
 
 ![kCancelSelf](/static/img/gantt-2.png)
 
@@ -225,34 +249,39 @@ By default the scheduler will interrupt the existing command and start running t
 
 #### Miscellaneous Notes
 
-Commands requiring multiple subsystems are allowed, they don't violate the "law of commands". F and G in the above charts are examples of this.
+Commands requiring multiple subsystems are allowed, and encouraged! Commands F and G in the above charts are examples.
 
-Commands don't necessarily need to require a subsystem at all. We'll often use this feature when we want to run a "waiting" command. `Commands.waitSeconds(double t)` is one example of a command that doesn't require a subsystem.
+A Commands can safely require 0 subsystems. `Commands.waitSeconds(double t)` is a common example of a command that doesn't require any subsystems.
 
 ### Lifecycle of a `Command`
 
-`Command`s are a state machine representing a complete action to be performed by the robot. The state machine is built from 4 states: `initialize`, `execute`, `isFinished`, and `end`.
+`Command`s are [state machines](https://en.wikipedia.org/wiki/Finite-state_machine) representing a complete action to be performed by the robot. The state machine is built from 4 states: `initialize`, `execute`, `isFinished`, and `end`.
 
 1. `void initialize()` - Called once when the command is started
 2. `void execute()` - Called every tick while the command is running
-3. `boolean isFinished()` - Called after `execute()`, returns `true` when the command should end
+3. `boolean isFinished()` - Called after `execute()`, returns `true` when the command should end naturally
 4. `void end(boolean interrupted)` - Called once when the command is ended. `interrupted` is `true` if the command was canceled by the scheduler, `false` if the command ended normally because `isFinished()` returned `true`.
 
 ![alt text](/static/img/gantt-4.png)
 
-Back in the day _all_ commands were written by explicitly writing out these methods. Sometimes it might still be necessary to write a command this way, but today WPILib has a lot of helper classes to make writing commands easier.
+> When referring to thing that come into and out of existence programmers use euphemisms like "life-cycle", "born", "died", or "killed". This is to just convey this relatively complicated concept in a way we're already pre-programmed to understand.
+
+_Back in my day_ all commands were written explicitly by writing out these 4 methods. I had a rule on the team (that is still enforced) that every command that is defined with this pattern must write all 4 methods instead of relying on the default implementations.
+
+It's sometimes still necessary to write commands this way, but nowadays WPILib has a lot of helper classes to make writing commands easier. Let's take a look at some examples to get familiar to the pattern.
 
 #### Long-form Command examples
 
-There are 3 common patterns when writing long-form commands:
+While showing off some commands I want to introduce you to 3 common patterns we use when thinking about commands.
 
 - Infinite Commands
 - Finite Commands
 - Instantaneous Commands
 
-Here's an example of each:
-
 ```java
+/**
+ *  While ran this command extends the climber
+ */
 public class ExtendClimberCommand extends Command {
     private final ClimberSubsystem climber;
 
@@ -272,7 +301,7 @@ public class ExtendClimberCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return false; // never ends on it's own
+        return false; // Notice!
     }
 
     @Override
@@ -282,9 +311,14 @@ public class ExtendClimberCommand extends Command {
 }
 ```
 
-`ExtendClimberCommand` here is an "Infinite Command". It runs forever, unless if something else interrupts it.
+`ExtendClimberCommand` here is an "Infinite Command". It runs forever, unless if something else, from the outside, interrupts it. Often the interruption is triggered by "releasing a button" or "hitting a limit switch".
+
+> [`Trigger`s](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/button/Trigger.html) are actually another abstraction that's apart of the WPILib command-based framework. Driver controllers or sensors can be mapped into `Trigger`s which can be used to start and stop commands.
 
 ```java
+/**
+ * ClimberToHeightCommand moves the climber to a specific height
+ */
 public class ClimberToHeightCommand extends Command {
     private static final double kTolerance = 0.1;
 
@@ -312,7 +346,7 @@ public class ClimberToHeightCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(climber.getHeight() - height) < kTolerance; // ends when a condition is met
+        return Math.abs(climber.getHeight() - height) < kTolerance; // Notice! (what changed?)
     }
 
     @Override
@@ -322,7 +356,7 @@ public class ClimberToHeightCommand extends Command {
 }
 ```
 
-`ClimberToHeightCommand` is a "Finite Command". It has a specific goal, to move the climber to a specific height. Once the climber reaches that height the command ends.
+`ClimberToHeightCommand` is a "Finite Command". It has a specific and articulable goal, to "move the climber to a specific height". Once the climber reaches that height the command ends.
 
 > Pop quiz: What kind of _control loop_ is `ClimberToHeightCommand` using?
 >
@@ -332,6 +366,9 @@ public class ClimberToHeightCommand extends Command {
 > - (D) Feed-Forward Controller
 
 ```java
+/**
+ * ClimberSetPointCommand changes the climber's height setpoint
+ */
 public class ClimberSetPointCommand {
     private final ClimberSubsystem climber;
     private final double setpoint;
@@ -362,14 +399,25 @@ public class ClimberSetPointCommand {
 }
 ```
 
-`ClimberSetPointCommand` is an "Instantaneous Command". It sets the climber to a specific setpoint and then ends. Here we're assuming that `ClimberSubsystem` is running the control loop in the background.
+`ClimberSetPointCommand` is an "Instantaneous Command". It sets the climber to a specific setpoint and then ends. Here I've changed the assumption on how `ClimberSubsystem` is implemented. Rather than the control being made externally, through a command, the climber's control loop is a local implementation detail and is assumed to be running in the background.
+
+This can be a decent trade-off to make, especially when:
+
+- If your control loop is complex enough might want to consider running it on a separate thread
+- Offloading a control loop to a motor controller often means it can run at a higher frequency (1000 Hz on a SparkMAX)
+- Your subsystem only has a single mode of control
 
 ### WPILib "New Commands"
 
-I'm not sure about you, but I got tired of writing commands like this [back in 2018](https://github.com/FRC5881/2018Robot/tree/master/src/main/java/org/techvalleyhigh/frc5881/powerup/robot/commands), there's a better way. WPILib supports something called "Command Compositions". These are powerful tools that allow us to build complex commands out of smaller parts. Let's take a look at how we could rewrite `ExtendClimberCommand`, `ClimberToHeightCommand`, and `ClimberSetPointCommand` using the new command framework:
+That was a lot! I'm not sure about you, but I got tired of writing commands like this [back in 2018](https://github.com/FRC5881/2018Robot/tree/master/src/main/java/org/techvalleyhigh/frc5881/powerup/robot/commands). Luckily, new versions of WPILib supports something called "Command Compositions". These are powerful tools that allow us to build complex commands out of smaller parts.
+
+> "Composition" is a heavily overloaded term in programming, here we're using it to mean "building complex things out of simpler parts".
+
+Let's take a look at how we could rewrite `ExtendClimberCommand`, `ClimberToHeightCommand`, and `ClimberSetPointCommand` using the modern command framework:
 
 ```java
 public class ClimberSubsystem extends Subsystem {
+    // The 'c' prefix is our convention for naming methods that return commands
     public Command cExtend() {
         // infinite command
         return runEnd(this::extend, this::stop);
@@ -394,7 +442,7 @@ public class ClimberSubsystem extends Subsystem {
 public class ClimberSubsystem extends Subsystem {
     @Override
     public void periodic() {
-        // Run control loop here
+        // Control loop goes here
     }
 
     public Command cSetpoint(double setpoint) {
@@ -404,15 +452,79 @@ public class ClimberSubsystem extends Subsystem {
 }
 ```
 
-New commands use a patterned called "declarative programming" as opposed to old command's "imperative programming". Both styles are capable of doing the same things, but it requires a different mindset for each. They also fit different niches, you'll see we'll often use the old command style for our driver controls because they're easier to step-through.
+> Methods in the pattern `public Command xyz() { ... }` are called "command factories".
+
+This next bit is the most common error I see when people are learning the new command framework.
+
+**Every time you call a command factory you're not yet preforming the specified action.** Rather you're kind of "setting up" the action to be preformed later. The `Command` is not actually ran until it is scheduled, often by a `Trigger` or with the `Comamnd.schedule()` method.
+
+This is important to understand, just like `Commands` the robot overall is sort of like a state-machine. The first phase the robot is "setup", this is where all of the `Triggers`, `Subsystems`, and `Commands` are created. This is pretty much the code you see in `RobotContainer`.
+
+The next phases all happen in a loop.
+
+1. All of the `Triggers` are checked to see if any commands need to be started or canceled. "Starting" command is not thing as creating a `new Command()`, objects are reused and recycled for better performance.
+2. All of the active `Command`s state machines and advanced.
+3. All of the `Subsystems` `void periodic() { ... }` methods are called.
+4. Data is sent over the network to the driver station.
+
+> Don't rely on the exact order of these phases. It's not well defined exactly when each phase happens, just know they all happen once per tick!
+
+This new-command framework brings us closer to a "declarative" style of programming as opposed to the "imperative" style we were using before. Both styles are capable of doing the same things, but each requires a different mindset. Both have their places, we'll often use the old command style for our driver controls because they're easier think through step-by-step.
 
 ### Composing Commands
 
-Up to this point we've only talked about commands that complete a single action. But what if we want to do multiple things at once? Think "drive forward while spinning the intake" or "run the shooter until it reaches speed then run the indexer". These actions are still 'commands' (they have a start and end) but they're composed of multiple smaller commands.
+Up to this point we've only talked about commands that complete a single action. But what if we want to do multiple things at once? Think "run the shooter until it reaches speed then run the indexer". These actions are still 'commands' (they have a start and end) but their complexity scales much faster than the simple commands we've seen so far. "run the shooter until it reaches speed then run the indexer" would probably be like 80 lines of code if we wrote it out long-form.
 
-The list of available compositions is long, too long for this page. Here are 3 sources to get you started:
+What would be better is if we could split long-form commands into the smaller parts they are clearly composed of.
 
-Check the [WPILib documentation](https://docs.wpilib.org/en/stable/docs/software/commandbased/command-groups.html) for an introduction.
+- "run shooter"
+- "until it reaches speed"
+- "run indexer"
+
+These 3 commands are all very simple
+
+```java
+public class ShooterSubsystem extends Subsystem {
+    public Command cRun() {
+        return runEnd(this::run, this::stop);
+    }
+
+    public Command cUntilSpeed(double speed) {
+        // This command has no `requirement`, defining it this way means it can run in parallel to `cRun`
+        return Commands.waitUntil(() -> getSpeed() > speed);
+    }
+}
+
+public class IndexerSubsystem extends Subsystem {
+    public Command cRun() {
+        return runEnd(this::run, this::stop);
+    }
+}
+```
+
+The really magic part of the new command framework is the options we're given to compose these commands together. Here I'll give you a taste, but to learn more you're going to have to read the WPILib written documentation and JavaDocs.
+
+```java
+public class RobotContainer {
+    private final ShooterSubsystem shooter = new ShooterSubsystem();
+    private final IndexerSubsystem indexer = new IndexerSubsystem();
+    private final CommandPS5Controller m_driverController = 
+        new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
+
+    public RobotContainer() {
+        m_driverController.buttonCircle().whileTrue(
+            Commands.runParallel(
+                // run the shooter
+                shooter.cRun(),
+                // until it reaches speed AND THEN run the indexer
+                shooter.cUntilSpeed(1000).andThen(indexer.cRun())
+            )
+        );
+    }
+}
+```
+
+Check the [WPILib documentation](https://docs.wpilib.org/en/stable/docs/software/commandbased/command-groups.html) for a deeper introduction.
 
 Check the [`Commands` Java docs](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/Commands.html) for a complete list of factories on the `Commands` class.
 
