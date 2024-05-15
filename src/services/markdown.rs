@@ -9,13 +9,13 @@ use actix_web::{
 use include_dir::{include_dir, Dir};
 use maud::Render;
 
-use crate::components::{self, Markdown, MarkdownFrontMatter, NavBar};
+use crate::components::{self, Markdown, MarkdownFrontMatter, SiteNav};
 
 const CONTENT: Dir = include_dir!("content");
 
 /// Markdown rendering service that functions as the foundation of the site
 pub fn markdown_service() -> impl HttpServiceFactory {
-    let nav = NavBar::new(&CONTENT);
+    let nav = SiteNav::new(&CONTENT);
     web::scope("/m")
         .app_data(Data::new(nav))
         .service(markdown_handler)
@@ -24,7 +24,7 @@ pub fn markdown_service() -> impl HttpServiceFactory {
 #[get("/{filename:.*}")]
 async fn markdown_handler(
     path: web::Path<PathBuf>,
-    nav: web::Data<NavBar>,
+    nav: web::Data<SiteNav>,
     req: HttpRequest,
 ) -> impl Responder {
     let path = path.into_inner();
