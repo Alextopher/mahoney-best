@@ -1,7 +1,5 @@
 use maud::{html, Render, DOCTYPE};
 
-use crate::components;
-
 use super::{navbar::SiteNav, Markdown};
 
 #[derive(Debug, serde::Deserialize)]
@@ -40,7 +38,7 @@ impl Render for Page<'_> {
     fn render(&self) -> maud::Markup {
         html! {
             (DOCTYPE)
-            (components::header(self.title))
+            (crate::header(self.title))
             (self.nav.render(self.uri))
             main {
                 (&self.content)

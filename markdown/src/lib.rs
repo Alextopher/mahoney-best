@@ -1,14 +1,12 @@
 mod blog;
 mod markdown;
 mod navbar;
-mod robots;
-
-pub use self::navbar::SiteNav;
-pub use blog::{MarkdownFrontMatter, Page};
-pub use markdown::Markdown;
-pub use robots::robots;
 
 use maud::{html, Markup};
+
+pub use blog::{MarkdownFrontMatter, Page};
+pub use markdown::Markdown;
+pub use navbar::SiteNav;
 
 pub fn header(title: &str) -> Markup {
     html! {

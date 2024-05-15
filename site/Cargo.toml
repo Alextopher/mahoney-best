@@ -1,0 +1,28 @@
+[package]
+name = "mahoney-best"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+markdown = { path = "../markdown" }
+
+env_logger = "0.11"
+log = "0.4"
+tracing = "0.1"
+
+include_dir = "0.7"
+mime_guess = "2.0"
+
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"
+
+maud = { version = "0.26", features = ["actix-web"] }
+
+actix-files = "0.6"
+actix-web = "4.5"
+actix-session = { version = "0.9", features = ["cookie-session"] }
+actix-identity = "0.7"
+actix-multipart = "0.6"
+
+futures-util = "0.3"
+tempfile = "3.10"

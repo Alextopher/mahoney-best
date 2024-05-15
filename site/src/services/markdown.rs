@@ -7,9 +7,8 @@ use actix_web::{
     HttpRequest, Responder,
 };
 use include_dir::{include_dir, Dir};
+use markdown::{Markdown, MarkdownFrontMatter, Page, SiteNav};
 use maud::Render;
-
-use crate::components::{self, Markdown, MarkdownFrontMatter, SiteNav};
 
 const CONTENT: Dir = include_dir!("content");
 
@@ -58,7 +57,7 @@ async fn markdown_handler(
         return Err(actix_web::error::ErrorNotFound("File not found"));
     }
 
-    let page = components::Page {
+    let page = Page {
         title: &front_matter
             .title
             .unwrap_or_else(|| path.file_stem().unwrap().to_string_lossy().to_string()),
