@@ -4,69 +4,25 @@ use actix_web::{
     dev::HttpServiceFactory,
     get,
     web::{self, Data},
-    HttpRequest, Responder,
 };
+use blog::Blog;
 use include_dir::{include_dir, Dir};
-use markdown::{Markdown, MarkdownFrontMatter, Page, SiteNav};
-use maud::Render;
+use maud::Markup;
 
-const CONTENT: Dir = include_dir!("content");
+const CONTENT: Dir = include_dir!("$CARGO_MANIFEST_DIR/../../content");
 
 /// Markdown rendering service that functions as the foundation of the site
 pub fn markdown_service() -> impl HttpServiceFactory {
-    let nav = SiteNav::new(&CONTENT);
+    let blog = Blog::from_include_dir(&CONTENT);
+
     web::scope("/m")
-        .app_data(Data::new(nav))
+        .app_data(Data::new(blog))
         .service(markdown_handler)
 }
 
 #[get("/{filename:.*}")]
-async fn markdown_handler(
-    path: web::Path<PathBuf>,
-    nav: web::Data<SiteNav>,
-    req: HttpRequest,
-) -> impl Responder {
-    let path = path.into_inner();
-    let file = match CONTENT.get_file(&path) {
-        Some(f) => f,
-        None => {
-            return Err(actix_web::error::ErrorNotFound("File not found"));
-        }
-    };
-
-    let content = match std::str::from_utf8(file.contents()) {
-        Ok(s) => s,
-        Err(e) => return Err(actix_web::error::ErrorInternalServerError(e.to_string())),
-    };
-
-    let markdown = Markdown(content);
-    let front_matter = markdown
-        .front_matter()
-        .transpose()
-        .map_err(|e| {
-            log::error!("Error parsing front matter: {}", e);
-            e
-        })
-        .ok()
-        .flatten()
-        .unwrap_or_else(|| {
-            MarkdownFrontMatter::with_title(path.file_stem().unwrap().to_string_lossy())
-        });
-
-    if front_matter.hidden {
-        return Err(actix_web::error::ErrorNotFound("File not found"));
-    }
-
-    let page = Page {
-        title: &front_matter
-            .title
-            .unwrap_or_else(|| path.file_stem().unwrap().to_string_lossy().to_string()),
-        content: markdown,
-        uri: req.uri().path(),
-        nav: &nav,
-    };
-
-    Ok(page.render())
+async fn markdown_handler(path: web::Path<PathBuf>, blog: web::Data<Blog>) -> Option<Markup> {
+    blog.get(&path.to_string_lossy()).cloned()
 }
 
 #[cfg(test)]

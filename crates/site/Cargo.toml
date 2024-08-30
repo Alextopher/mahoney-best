@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 markdown = { path = "../markdown" }
+blog = { path = "../blog" }
 
 env_logger = "0.11"
 log = "0.4"

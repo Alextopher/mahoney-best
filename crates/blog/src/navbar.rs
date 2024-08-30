@@ -1,4 +1,5 @@
 use inflector::Inflector;
+use markdown::Markdown;
 use maud::{html, Markup};
 use std::{
     collections::{HashMap, VecDeque},
@@ -7,14 +8,14 @@ use std::{
 
 use include_dir::{Dir, DirEntry, File};
 
-use super::{Markdown, MarkdownFrontMatter};
+use super::MarkdownFrontMatter;
 
 /// Get nav info returns the title, order, and path of a file
 fn get_nav_info(page: &File) -> Option<(String, i32, String)> {
     let path = format!("/m/{}", page.path().to_str().unwrap());
 
     let content = std::str::from_utf8(page.contents()).unwrap();
-    let markdown = Markdown(content);
+    let markdown = Markdown::new(content);
     let front_matter = markdown
         .front_matter::<MarkdownFrontMatter>()
         .transpose()
@@ -145,7 +146,7 @@ pub struct SiteNav {
 }
 
 impl SiteNav {
-    /// Creates the site's navigation bar
+    /// Creates the site's navigation tree from an [`include_dir::Dir`]
     pub fn new(dir: &Dir) -> Self {
         let mut tree = HashMap::new();
 
@@ -206,10 +207,10 @@ impl SiteNav {
         })
     }
 
-    /// Renders the navigation bar from the perspective of the current page, or fallback to rendering the home page
+    /// Renders the navigation bar from the perspective of the current page, or fallback to rendering the home page's version
     pub fn render(&self, current: &str) -> Markup {
-        self.try_render(current)
-            .unwrap_or_else(|| self.try_render("/m/home.md").unwrap())
+        let p = format!("/m/{}", current);
+        self.try_render(&p).unwrap()
     }
 }
 
@@ -217,7 +218,7 @@ impl SiteNav {
 mod tests {
     use super::*;
     use include_dir::include_dir;
-    const CONTENT: Dir = include_dir!("content");
+    const CONTENT: Dir = include_dir!("$CARGO_MANIFEST_DIR/../../content");
 
     #[test]
     fn site_nav() {

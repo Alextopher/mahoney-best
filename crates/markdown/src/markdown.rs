@@ -31,7 +31,11 @@ static TS: Lazy<ThemeSet> = Lazy::new(ThemeSet::load_defaults);
 /// HTML is not sanitized by this component
 pub struct Markdown<'a>(pub &'a str);
 
-impl Markdown<'_> {
+impl<'a> Markdown<'a> {
+    pub fn new(s: &'a str) -> Self {
+        Markdown(s)
+    }
+
     /// Parses the front matter of the markdown content.
     ///
     /// # Returns
