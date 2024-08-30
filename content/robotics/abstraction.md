@@ -277,7 +277,7 @@ A command can safely require 0 subsystems. `Commands.waitSeconds(double t)` is a
 
 > When referring to things "that come into and out of existence" programmers will use euphemisms like "life-cycle", "born", "died", or "killed". This is to just convey this relatively complicated concept in a way that we're unforuantely already familiar with.
 
-_Back in my day_ all commands were written explicitly by defining these 4 methods. I had a rule on the team (that is still enforced) that every command defined with this pattern must write all 4 methods instead of relying on the default implementations. For the most part it is not longer necessary to write commands this way, nowadays WPILib has a lot of helper classes to make writing commands easier. Nontheless I believe they are still a good starting poing for getting comfortable with Commands.
+_Back in my day_ all commands were written explicitly by defining these 4 methods. I had a rule on the team (that is still enforced) that every command defined with this pattern must write all 4 methods instead of relying on the default implementations. For the most part it is not longer necessary to write commands this way, nowadays WPILib has a lot of helper classes to make writing commands easier. Nonetheless I believe they are still a good starting point for getting comfortable with Commands.
 
 #### Long-form Command Examples
 
@@ -410,7 +410,7 @@ public class ClimberSetPointCommand {
 }
 ```
 
-`ClimberSetPointCommand` is an "Instantaneous Command". It sets the climber to a specific setpoint and then immedateily exits. Do implement this command I've had to change the assumption on how `ClimberSubsystem` is implemented. Instead of the control loop being seperate from the ClimbSubsystem (through a Command) the climber's control loop is now a local implementation detail and is assume to always be running.
+`ClimberSetPointCommand` is an "Instantaneous Command". It sets the climber to a specific setpoint and then immedateily exits. Do implement this command I've had to change the assumption on how `ClimberSubsystem` is implemented. Instead of the control loop being separate from the ClimbSubsystem (through a Command) the climber's control loop is now a local implementation detail and is assume to always be running.
 
 This can be a decent trade-off to make, especially when:
 
@@ -429,7 +429,7 @@ Let's take a look at how we could rewrite `ExtendClimberCommand`, `ClimberToHeig
 ```java
 // Notice the change of reference frame - we are now writing code within ClimberSubsystem.
 public class ClimberSubsystem extends Subsystem {
-    // ... implementation details ommited ... //
+    // ... implementation details omitted ... //
 
     // The 'c' prefix is our convention for naming methods that return commands
     public Command cExtend() {
@@ -498,24 +498,26 @@ The next phases all happen in a repeating loop (by the Command Scheduler).
 
 Up to this point we've only talked about commands that execute a single action. It begs the question, what if we want to do multiple things at once, or in sequence? In this section we'll use an example "run the shooter, when it reaches speed feed a game piece from the indexer". This action is still a `Command` (it has a start and end) but it's more complex compared to anything we've seen thus far.
 
-This command is certianly writable using the old framework. It requires slightly deeper
+This command is certainly writable using the old framework. I've written a possible implementation below, notice how it's a much longer than either of the previous commands.
 
 ```java
+/**
+  * Run the shooter until it reaches a certain speed, then run the indexer.
+  *
+  * This command is a State Machine with two states:
+  * 1. WAIT_FOR_SPEED - Run the shooter until it reaches a certain speed.
+  * 2. RUN_INDEXER - Run the indexer.
+  */
 public class RunShooterUntilSpeedThenRunIndexerCommand extends CommandBase {
     private final ShooterSubsystem shooter;
     private final IndexerSubsystem indexer;
     private final double speed;
 
-    // State machine
-    //
-    //
-    //
     private State state = State.WAIT_FOR_SPEED;
     private enum State {
         WAIT_FOR_SPEED,
         RUN_INDEXER
     }
-
 
     public RunShooterUntilSpeedThenRunIndexerCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, double speed) {
         this.shooter = shooter;
@@ -557,7 +559,17 @@ public class RunShooterUntilSpeedThenRunIndexerCommand extends CommandBase {
 }
 ```
 
-. **The complexity of writing a long-form command scales unmanageably**.
+This command only has 3 or 4 requirements, and so it wasn't terribly difficult to write. Think about how this problem might scale if we add some more reasonable requirements:
+
+- Timeout `WAIT_FOR_SPEED` after 5 seconds
+- Timeout `RUN_INDEXER` after 5 seconds
+- Before running the indexer, wait for the shooter to be at speed for 1 second
+- Use computer vision to detect a game piece and pick it up and then run this command
+And the biggest requirements:
+- Do all of these things at different points in the match
+- Change this code quickly - at competition - in response to drive team feedback
+
+**Long-form commands scale in complexity unmangeably.**
 
 What would be better is if we could split long-form commands into the smaller parts they are clearly composed of.
 
@@ -565,7 +577,7 @@ What would be better is if we could split long-form commands into the smaller pa
 - "until it reaches speed"
 - and then "run indexer"
 
-These 3 commands are all very simple
+These 3 commands are all very simple:
 
 ```java
 public class ShooterSubsystem extends Subsystem {
@@ -575,7 +587,6 @@ public class ShooterSubsystem extends Subsystem {
     }
 
     public Command cUntilSpeed(double speed) {
-        // This command has no `requirement`, defining it this way means it can run in parallel to `cRun`
         // finite command
         return Commands.waitUntil(() -> getSpeed() > speed);
     }
@@ -589,7 +600,7 @@ public class IndexerSubsystem extends Subsystem {
 }
 ```
 
-The really magic part of the new command framework is the options we're given to compose these commands together. Here I'll give you a taste, but to learn more you're going to have to read the WPILib written documentation and JavaDocs.
+The magic part of the new command framework is the options we're given to compose these commands together. Here I'll give you a taste, but to learn more you're going to have to read the WPILib written documentation and JavaDocs.
 
 ```java
 public class RobotContainer {
@@ -600,6 +611,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         m_driverController.buttonCircle().whileTrue(
+            // This command is functionally equivalent to the long-form command from before. In approximately 1/4 the lines of code and straight forward methods to change functionality.
             Commands.runParallel(
                 // run the shooter
                 shooter.cRun(),
