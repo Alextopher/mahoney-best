@@ -13,7 +13,7 @@ I'm Chris Mahoney, aka `alextopher` online and this is my handwritten personal w
 
 ### Other sites on mahoney.best
 
-- [auto pixel art](https://pixel.mahoney.best)
+- [auto pixel art](https://mahoney.best/pixel)
 - [trace-route map](https://trace.mahoney.best)
 
 I intend to migrate these tools into this project.
@@ -21,6 +21,8 @@ I intend to migrate these tools into this project.
 ## The Short-Story
 
 I'm a life-long learner with a focus on software engineering but with interests that spread across all STEM fields. In addition to software I like astronomy and physics. I graduated from [Clarkson University](https://clarkson.edu) in December 2022 with a B.S. in Computer Science. From there I worked for a short time a mid sized software shop where, for a number of personal reasons, I did not succeed. That shock sent me for a short time down the path of becoming an educator. I worked as a teaching assistant and subsitute at my former high school totaling around 2 years. Today, I've leveled out and rediscovered my value as a software engineer and work for IBM Research at the Albany NanoTech Complex.
+
+_The postings on this site are my own and don’t necessarily represent IBM’s positions, strategies or opinions._
 
 ## Source
 
