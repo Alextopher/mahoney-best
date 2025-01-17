@@ -7,6 +7,7 @@ use actix_web::{
 };
 use blog::Blog;
 use include_dir::{include_dir, Dir};
+use log::info;
 use maud::Markup;
 
 const CONTENT: Dir = include_dir!("$CARGO_MANIFEST_DIR/../../content");
@@ -22,6 +23,7 @@ pub fn markdown_service() -> impl HttpServiceFactory {
 
 #[get("/{filename:.*}")]
 async fn markdown_handler(path: web::Path<PathBuf>, blog: web::Data<Blog>) -> Option<Markup> {
+    info!("Requesting {:?}", path);
     blog.get(&path.to_string_lossy()).cloned()
 }
 

@@ -1,3 +1,4 @@
 [workspace]
-resolver = "2"
-members = ["crates/site", "crates/blog"]
+resolver = "3"
+members = ["crates/site", "crates/blog", "crates/autopixel"]
+default-members = ["crates/site"]

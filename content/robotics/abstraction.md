@@ -1,6 +1,7 @@
 ---
 page-title: Abstraction
 order: 2
+hidden: true
 ---
 
 # Command Based Programming
@@ -32,7 +33,7 @@ We designed 7 subsystems for our robot:
 - Shooter
   - 2 shooter motors
 - AmpGuide
-  - 1 AmpGuide motor
+  - 1 amp guide motor
 - Climber
   - 1 climber motor
 - LEDs
@@ -48,7 +49,7 @@ The biggest constraint in FRC is time. Especially on programming team, as a rule
 
 Paired with not having enough access to the robot, build team has a habit of making near constant design changes to the robot. One day we'll have a climber with 1 motor and a limit switch and the next it will be 2 motors and a laser rangefinder. One day we have a shooter with 1 flywheel and then the next it's a shooter with 2 flywheels and an indexer. Programming team is working at it's best when we're able to quickly respond to significant design changes.
 
-Fundamentally, changing from a "1-motor climber" to a "2-motor climber" doesn't really change the robot's intended behavior. No matter how many motors are on the climber we still assume the climber is going to _move up_ and _move down_. **A climber could be built with a winch, a scissor lift, a telescoping arm, or a pneumatic piston and it would still _move up_ and _move down_**, it would *_climb_. A shooter that has 1 wheel or 2 wheels still _shoots_. A ground intake that uses CTRE Falcon motors or REV Neo motors still _intakes_.
+Fundamentally, changing from a "1-motor climber" to a "2-motor climber" doesn't really change the robot's intended behavior. No matter how many motors are on the climber we still assume the climber is going to _move up_ and _move down_. **A climber could be built with a winch, a scissor lift, a telescoping arm, or a pneumatic piston and it would still _move up_ and _move down_**, it would _climb_. A shooter that has 1 wheel or 2 wheels still _shoots_. A ground intake that uses CTRE Falcon motors or REV Neo motors still _intakes_.
 
 There's a clear pattern here, no matter how we build a subsystem it typically has the same "intended behavior".
 
@@ -131,7 +132,7 @@ public class RobotContainer {
 }
 ```
 
-> This short program defines a *real* FRC Robot.
+> This short program defines a _real_ FRC Robot.
 
 Let's update this design. Say we test the code on our robot and we learn that the climber is far to weak to climb. The first change we make is increasing the power of the climber motor from 50% to 100% but sadly, this doesn't fix the problem, we send it back to build team...
 
@@ -468,7 +469,7 @@ public class ClimberSubsystem extends Subsystem {
 
 > Methods in the pattern `public Command xyz() { ... }` are called "command factories". Factories often simplify writing code.
 >
-> ```
+> ```java
 > // Old - Notice you need to know the name of `ClimberSetPointCommand` to be able to write this line.
 > Command goto10 = new ClimberSetPointCommand(climber, 10.0);
 > // New - `cSetpoint` is much easier to find and name

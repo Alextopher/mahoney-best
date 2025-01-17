@@ -13,6 +13,7 @@ Each service is given it's own top-level url representing a single letter.
 |      | /a   | "admin"    | admin panel |
 |      | /f   | "file"     | simple file upload/download server |
 | xxxx | /m   | "markdown" | markdown renderer |
+| xxxx | /pixel  | "pixel art" | auto-pixel art project |
 |      | /r   | "redirect" | url redirector |
 | xxxx | /s   | "static"   | static files baked into the binary |
 |      | /t   | "tiny"     | url shortener |

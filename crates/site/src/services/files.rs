@@ -73,7 +73,7 @@ async fn upload_file(
         // Following a successful upload we move the file to the uploads directory
         let filename = field
             .content_disposition()
-            .get_filename()
+            .and_then(|cd| cd.get_filename())
             .and_then(|f| Path::new(f).file_name())
             .map(|f| f.to_string_lossy().to_string())
             .ok_or(ErrorBadRequest("Filename missing"))?;

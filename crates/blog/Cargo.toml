@@ -8,8 +8,7 @@ markdown = { path = "../markdown" }
 
 Inflector = "0.11"
 include_dir = "0.7"
-log = "0.4"
 maud = "0.26"
 serde = "1.0"
 serde_yaml = "0.9"
-tracing = "0.1.40"
+tracing = "0.1"

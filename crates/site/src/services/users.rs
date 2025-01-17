@@ -21,8 +21,6 @@ pub fn user_service() -> impl HttpServiceFactory {
 }
 
 async fn index(user: Option<Identity>, query: web::Query<RedirectQuery>) -> impl Responder {
-    log::debug!("{:?}", query);
-
     if let Some(user) = user {
         html! {
             (DOCTYPE)
@@ -61,8 +59,6 @@ async fn login(
     login: web::Form<LoginReq>,
     query: web::Query<RedirectQuery>,
 ) -> actix_web::Result<impl Responder> {
-    log::debug!("{:?}", query);
-
     // user sends a username and password as json
     if config.check_admin(&login.username, &login.password) {
         return Ok(HttpResponse::Unauthorized().finish());

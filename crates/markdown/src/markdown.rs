@@ -58,7 +58,7 @@ impl<'a> Markdown<'a> {
     ///
     /// ```
     /// # use maud::html;
-    /// use mahoney_best::components::Markdown;
+    /// use markdown::Markdown;
     ///
     /// let markdown = Markdown(r#"
     /// ---
@@ -66,7 +66,7 @@ impl<'a> Markdown<'a> {
     /// ---
     ///
     /// # Hello World
-    /// "#.to_string());
+    /// "#);
     ///
     /// #[derive(Debug, serde::Deserialize)]
     /// struct FrontMatter {
@@ -117,7 +117,7 @@ impl<'a> Markdown<'a> {
 }
 
 /// Returns my chosen comrak options
-fn get_comrak_options() -> Options {
+fn get_comrak_options() -> Options<'static> {
     let mut options = Options::default();
 
     // Extensions
