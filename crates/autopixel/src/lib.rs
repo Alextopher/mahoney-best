@@ -26,7 +26,6 @@ use median_cut::median_cut;
 use p5::create_program;
 use quadtree::{decompose, optimize};
 use rectangle::Rectangle;
-use tracing::info_span;
 
 pub type Color = Rgb<u8>;
 
@@ -40,7 +39,6 @@ pub fn encode_png(image: &RgbImage) -> Vec<u8> {
 
 pub fn autopixel<R: Read + Seek + BufRead>(
     image_buffer: R,
-    hash: u64,
     scale: usize,
     colors: usize,
 ) -> Result<(String, RgbImage)> {
@@ -48,8 +46,6 @@ pub fn autopixel<R: Read + Seek + BufRead>(
         .with_guessed_format()?
         .decode()?
         .to_rgb8();
-
-    let _entered = info_span!("autopixel", hash = format!("{:#x}", hash), scale, colors).entered();
 
     let mut pixelated = pixelate(&image, scale);
     let color_counts = quantize(&mut pixelated, colors);

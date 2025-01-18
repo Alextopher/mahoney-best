@@ -8,7 +8,7 @@ markdown = { path = "../markdown" }
 blog = { path = "../blog" }
 autopixel = { path = "../autopixel" }
 
-actix-identity = "0.7"
+actix-identity = "0.8"
 actix-files = "0.6"
 actix-multipart = "0.7"
 actix-session = { version = "0.10", features = ["cookie-session"] }
@@ -20,7 +20,7 @@ mime_guess = "2.0"
 serde = { version = "1.0", features = ["derive"] }
 tempfile = "3.10"
 toml = "0.8"
-twox-hash = "2.1.0"
-either = "1.13.0"
-log = "0.4.25"
-env_logger = "0.11.6"
+twox-hash = "2.1"
+either = "1.13"
+log = "0.4"
+env_logger = "0.11"

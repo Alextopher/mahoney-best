@@ -125,12 +125,7 @@ async fn upload(
     let reader = std::io::Cursor::new(form.file.data);
 
     // Run autopixel on the file
-    let result = autopixel(
-        reader,
-        hash,
-        form.size.into_inner(),
-        form.colors.into_inner(),
-    );
+    let result = autopixel(reader, form.size.into_inner(), form.colors.into_inner());
 
     let (p5js, image) = match result {
         Ok((p5js, image)) => (p5js, image),
